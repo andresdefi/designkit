@@ -1,0 +1,733 @@
+import type { TypographyItem, TypographyData } from "@/lib/types";
+import { generateTypeScale, getPresetByIdOrDefault } from "@/lib/typography-utils";
+
+// ============================================================
+// Font pairing metadata — 50 pairings across 6 groups
+// ============================================================
+
+export type TypographyGroup =
+  | "Modern / Clean"
+  | "Editorial / Expressive"
+  | "Technical / Precise"
+  | "Bold / Statement"
+  | "Friendly / Rounded"
+  | "Minimal / Neutral";
+
+interface FontPairing {
+  id: string;
+  group: TypographyGroup;
+  name: string;
+  description: string;
+  headingFont: string;
+  headingFontUrl?: string;
+  bodyFont: string;
+  bodyFontUrl?: string;
+  monoFont?: string;
+  monoFontUrl?: string;
+  headingWeight: number;
+  bodyWeight: number;
+}
+
+export const FONT_PAIRINGS: FontPairing[] = [
+  // ── Modern / Clean (8) ────────────────────────────────────────
+  {
+    id: "inter",
+    group: "Modern / Clean",
+    name: "Inter",
+    description: "The workhorse — highly legible at every size",
+    headingFont: "Inter",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
+    bodyFont: "Inter",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "geist",
+    group: "Modern / Clean",
+    name: "Geist Sans + Geist Mono",
+    description: "Vercel's font — requires next/font or local install. Preview uses system fallback.",
+    headingFont: "Geist, system-ui, sans-serif",
+    bodyFont: "Geist, system-ui, sans-serif",
+    monoFont: "Geist Mono, ui-monospace, monospace",
+    headingWeight: 600,
+    bodyWeight: 400,
+  },
+  {
+    id: "sf-pro",
+    group: "Modern / Clean",
+    name: "SF Pro (System)",
+    description: "Apple's system font — native iOS/macOS feel. macOS/iOS only.",
+    headingFont: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui",
+    bodyFont: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui",
+    monoFont: "'SF Mono', ui-monospace, monospace",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "roboto",
+    group: "Modern / Clean",
+    name: "Roboto",
+    description: "Google's Material Design default — clean and neutral",
+    headingFont: "Roboto",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap",
+    bodyFont: "Roboto",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap",
+    monoFont: "Roboto Mono",
+    monoFontUrl: "https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "dm-sans",
+    group: "Modern / Clean",
+    name: "DM Sans",
+    description: "Geometric sans with low contrast — contemporary feel",
+    headingFont: "DM Sans",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap",
+    bodyFont: "DM Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap",
+    monoFont: "DM Mono",
+    monoFontUrl: "https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "figtree",
+    group: "Modern / Clean",
+    name: "Figtree",
+    description: "Friendly geometric — trending, great for product UI",
+    headingFont: "Figtree",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Figtree",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "noto-sans",
+    group: "Modern / Clean",
+    name: "Noto Sans",
+    description: "Google's universal font — massive language support, clean",
+    headingFont: "Noto Sans",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap",
+    bodyFont: "Noto Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "lato",
+    group: "Modern / Clean",
+    name: "Lato",
+    description: "Warm humanist sans — classic web favorite, highly versatile",
+    headingFont: "Lato",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap",
+    bodyFont: "Lato",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap",
+    headingWeight: 900,
+    bodyWeight: 400,
+  },
+
+  // ── Editorial / Expressive (9) ────────────────────────────────
+  {
+    id: "playfair-source",
+    group: "Editorial / Expressive",
+    name: "Playfair Display + Source Sans 3",
+    description: "Classic editorial pairing — elegant headings, clean body",
+    headingFont: "Playfair Display",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&display=swap",
+    bodyFont: "Source Sans 3",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "fraunces-inter",
+    group: "Editorial / Expressive",
+    name: "Fraunces + Inter",
+    description: "Soft serif headings with modern body text",
+    headingFont: "Fraunces",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap",
+    bodyFont: "Inter",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "lora-merriweather-sans",
+    group: "Editorial / Expressive",
+    name: "Lora + Merriweather Sans",
+    description: "Warm serif + humanist sans — great for long reads",
+    headingFont: "Lora",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap",
+    bodyFont: "Merriweather Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;500;600&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "cormorant-montserrat",
+    group: "Editorial / Expressive",
+    name: "Cormorant Garamond + Montserrat",
+    description: "High-contrast display serif with geometric body",
+    headingFont: "Cormorant Garamond",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap",
+    bodyFont: "Montserrat",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap",
+    headingWeight: 600,
+    bodyWeight: 400,
+  },
+  {
+    id: "libre-baskerville-source",
+    group: "Editorial / Expressive",
+    name: "Libre Baskerville + Source Sans 3",
+    description: "Traditional transitional serif with a clean sans body",
+    headingFont: "Libre Baskerville",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap",
+    bodyFont: "Source Sans 3",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "bodoni-moda-jost",
+    group: "Editorial / Expressive",
+    name: "Bodoni Moda + Jost",
+    description: "High-contrast modern didone serif with geometric sans",
+    headingFont: "Bodoni Moda",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,700;6..96,800&display=swap",
+    bodyFont: "Jost",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "crimson-pro-raleway",
+    group: "Editorial / Expressive",
+    name: "Crimson Pro + Raleway",
+    description: "Warm book serif with elegant thin sans",
+    headingFont: "Crimson Pro",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&display=swap",
+    bodyFont: "Raleway",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "eb-garamond-karla",
+    group: "Editorial / Expressive",
+    name: "EB Garamond + Karla",
+    description: "Classic Garamond revival with friendly grotesque body",
+    headingFont: "EB Garamond",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Karla",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Karla:wght@400;500;600;700&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "bitter-source",
+    group: "Editorial / Expressive",
+    name: "Bitter + Source Sans 3",
+    description: "Slab serif for screen reading with clean body text",
+    headingFont: "Bitter",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Bitter:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Source Sans 3",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+
+  // ── Technical / Precise (8) ───────────────────────────────────
+  {
+    id: "jetbrains-inter",
+    group: "Technical / Precise",
+    name: "JetBrains Mono + Inter",
+    description: "Developer-focused — mono headings, clean body",
+    headingFont: "JetBrains Mono",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap",
+    bodyFont: "Inter",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
+    monoFont: "JetBrains Mono",
+    monoFontUrl: "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "ibm-plex",
+    group: "Technical / Precise",
+    name: "IBM Plex Sans + IBM Plex Mono",
+    description: "IBM's type family — corporate precision with mono support",
+    headingFont: "IBM Plex Sans",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+    bodyFont: "IBM Plex Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+    monoFont: "IBM Plex Mono",
+    monoFontUrl: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap",
+    headingWeight: 600,
+    bodyWeight: 400,
+  },
+  {
+    id: "space-grotesk-mono",
+    group: "Technical / Precise",
+    name: "Space Grotesk + Space Mono",
+    description: "Proportional + monospaced pair — geometric and technical",
+    headingFont: "Space Grotesk",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap",
+    bodyFont: "Space Grotesk",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap",
+    monoFont: "Space Mono",
+    monoFontUrl: "https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "outfit-fira",
+    group: "Technical / Precise",
+    name: "Outfit + Fira Code",
+    description: "Modern geometric sans with ligature-rich code font",
+    headingFont: "Outfit",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap",
+    bodyFont: "Outfit",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap",
+    monoFont: "Fira Code",
+    monoFontUrl: "https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "inconsolata-noto",
+    group: "Technical / Precise",
+    name: "Inconsolata + Noto Sans",
+    description: "Classic mono heading with universal body",
+    headingFont: "Inconsolata",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500;600;700&display=swap",
+    bodyFont: "Noto Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap",
+    monoFont: "Inconsolata",
+    monoFontUrl: "https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "red-hat-mono-text",
+    group: "Technical / Precise",
+    name: "Red Hat Mono + Red Hat Text",
+    description: "Red Hat's type system — cohesive mono and text pair",
+    headingFont: "Red Hat Mono",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@400;500;600;700&display=swap",
+    bodyFont: "Red Hat Text",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@400;500;600;700&display=swap",
+    monoFont: "Red Hat Mono",
+    monoFontUrl: "https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@400;500&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "overpass",
+    group: "Technical / Precise",
+    name: "Overpass + Overpass Mono",
+    description: "Highway-inspired open typeface — government-grade clarity",
+    headingFont: "Overpass",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Overpass:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Overpass",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Overpass:wght@400;500;600;700;800&display=swap",
+    monoFont: "Overpass Mono",
+    monoFontUrl: "https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@400;500;600;700&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "azeret-dm",
+    group: "Technical / Precise",
+    name: "Azeret Mono + DM Sans",
+    description: "Geometric mono with clean geometric sans body",
+    headingFont: "Azeret Mono",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500;600;700&display=swap",
+    bodyFont: "DM Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap",
+    monoFont: "Azeret Mono",
+    monoFontUrl: "https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+
+  // ── Bold / Statement (9) ──────────────────────────────────────
+  {
+    id: "clash-satoshi",
+    group: "Bold / Statement",
+    name: "Clash Display + Satoshi",
+    description: "Fontshare duo — striking headings with balanced body",
+    headingFont: "Clash Display",
+    headingFontUrl: "https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap",
+    bodyFont: "Satoshi",
+    bodyFontUrl: "https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "cabinet-general",
+    group: "Bold / Statement",
+    name: "Cabinet Grotesk + General Sans",
+    description: "Fontshare pair — bold grotesk headings, versatile body",
+    headingFont: "Cabinet Grotesk",
+    headingFontUrl: "https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&display=swap",
+    bodyFont: "General Sans",
+    bodyFontUrl: "https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap",
+    headingWeight: 800,
+    bodyWeight: 400,
+  },
+  {
+    id: "plus-jakarta",
+    group: "Bold / Statement",
+    name: "Plus Jakarta Sans",
+    description: "Chunky geometric sans — standout at large sizes",
+    headingFont: "Plus Jakarta Sans",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Plus Jakarta Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
+    headingWeight: 800,
+    bodyWeight: 400,
+  },
+  {
+    id: "sora",
+    group: "Bold / Statement",
+    name: "Sora",
+    description: "Geometric with personality — wide and punchy",
+    headingFont: "Sora",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Sora",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "manrope",
+    group: "Bold / Statement",
+    name: "Manrope",
+    description: "Semi-condensed geometric — strong at all weights",
+    headingFont: "Manrope",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Manrope",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap",
+    headingWeight: 800,
+    bodyWeight: 400,
+  },
+  {
+    id: "bricolage-grotesque",
+    group: "Bold / Statement",
+    name: "Bricolage Grotesque",
+    description: "Trending variable grotesque — quirky terminals, big personality",
+    headingFont: "Bricolage Grotesque",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap",
+    bodyFont: "Bricolage Grotesque",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap",
+    headingWeight: 800,
+    bodyWeight: 400,
+  },
+  {
+    id: "red-hat-display",
+    group: "Bold / Statement",
+    name: "Red Hat Display + Red Hat Text",
+    description: "Wide, bold, distinctive — Red Hat's display face",
+    headingFont: "Red Hat Display",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;800;900&display=swap",
+    bodyFont: "Red Hat Text",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@400;500;600;700&display=swap",
+    headingWeight: 800,
+    bodyWeight: 400,
+  },
+  {
+    id: "lexend",
+    group: "Bold / Statement",
+    name: "Lexend",
+    description: "Designed for reading ease — strong at display sizes",
+    headingFont: "Lexend",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Lexend",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "unbounded-inter",
+    group: "Bold / Statement",
+    name: "Unbounded + Inter",
+    description: "Ultra-bold rounded display with clean modern body",
+    headingFont: "Unbounded",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700;800;900&display=swap",
+    bodyFont: "Inter",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
+    headingWeight: 800,
+    bodyWeight: 400,
+  },
+
+  // ── Friendly / Rounded (8) ────────────────────────────────────
+  {
+    id: "nunito",
+    group: "Friendly / Rounded",
+    name: "Nunito",
+    description: "Rounded terminals — approachable and friendly",
+    headingFont: "Nunito",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Nunito",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "quicksand-open",
+    group: "Friendly / Rounded",
+    name: "Quicksand + Open Sans",
+    description: "Rounded display with neutral body — playful yet readable",
+    headingFont: "Quicksand",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap",
+    bodyFont: "Open Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "comfortaa-karla",
+    group: "Friendly / Rounded",
+    name: "Comfortaa + Karla",
+    description: "Geometric rounded headings with grotesque body",
+    headingFont: "Comfortaa",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap",
+    bodyFont: "Karla",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Karla:wght@400;500;600;700&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "baloo-work",
+    group: "Friendly / Rounded",
+    name: "Baloo 2 + Work Sans",
+    description: "Bubbly display font with clean geometric body",
+    headingFont: "Baloo 2",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Work Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "poppins",
+    group: "Friendly / Rounded",
+    name: "Poppins",
+    description: "Geometric sans with rounded forms — universally liked",
+    headingFont: "Poppins",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Poppins",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "rubik",
+    group: "Friendly / Rounded",
+    name: "Rubik",
+    description: "Slightly rounded corners — popular for modern product UI",
+    headingFont: "Rubik",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Rubik",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "varela-round-lato",
+    group: "Friendly / Rounded",
+    name: "Varela Round + Lato",
+    description: "Rounded monoline headings with warm humanist body",
+    headingFont: "Varela Round",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Varela+Round&display=swap",
+    bodyFont: "Lato",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap",
+    headingWeight: 400,
+    bodyWeight: 400,
+  },
+  {
+    id: "grandstander-nunito-sans",
+    group: "Friendly / Rounded",
+    name: "Grandstander + Nunito Sans",
+    description: "Handwriting-inspired display with clean sans body",
+    headingFont: "Grandstander",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Grandstander:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Nunito Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+
+  // ── Minimal / Neutral (8) ─────────────────────────────────────
+  {
+    id: "system-stack",
+    group: "Minimal / Neutral",
+    name: "System Stack",
+    description: "Native OS fonts — zero load time, maximum compatibility",
+    headingFont: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+    bodyFont: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+    monoFont: "ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "archivo",
+    group: "Minimal / Neutral",
+    name: "Archivo",
+    description: "Grotesque with a slightly condensed feel — editorial neutral",
+    headingFont: "Archivo",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Archivo",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "albert-sans",
+    group: "Minimal / Neutral",
+    name: "Albert Sans",
+    description: "Geometric grotesque — clean, modern, understated",
+    headingFont: "Albert Sans",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Albert Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "switzer",
+    group: "Minimal / Neutral",
+    name: "Switzer",
+    description: "Neo-grotesque with Swiss precision. Fontshare font.",
+    headingFont: "Switzer",
+    headingFontUrl: "https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap",
+    bodyFont: "Switzer",
+    bodyFontUrl: "https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "instrument-sans",
+    group: "Minimal / Neutral",
+    name: "Instrument Sans",
+    description: "Simple, minimal, trending — great for subtle interfaces",
+    headingFont: "Instrument Sans",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap",
+    bodyFont: "Instrument Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "public-sans",
+    group: "Minimal / Neutral",
+    name: "Public Sans",
+    description: "US Web Design System font — highly neutral, government-grade",
+    headingFont: "Public Sans",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Public Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "wix-madefor",
+    group: "Minimal / Neutral",
+    name: "Wix Madefor Display",
+    description: "Modern neutral with excellent readability at all sizes",
+    headingFont: "Wix Madefor Display",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Wix Madefor Display",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400;500;600;700;800&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+  {
+    id: "hanken-grotesk",
+    group: "Minimal / Neutral",
+    name: "Hanken Grotesk",
+    description: "Clean contemporary grotesque — minimal and precise",
+    headingFont: "Hanken Grotesk",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap",
+    bodyFont: "Hanken Grotesk",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap",
+    headingWeight: 700,
+    bodyWeight: 400,
+  },
+];
+
+// ============================================================
+// Groups in display order
+// ============================================================
+
+export const TYPOGRAPHY_GROUPS: TypographyGroup[] = [
+  "Modern / Clean",
+  "Editorial / Expressive",
+  "Technical / Precise",
+  "Bold / Statement",
+  "Friendly / Rounded",
+  "Minimal / Neutral",
+];
+
+// ============================================================
+// Build TypographyItem[] from pairings + a chosen scale
+// ============================================================
+
+export function getTypographyItems(
+  scaleId: string = "default"
+): TypographyItem[] {
+  const preset = getPresetByIdOrDefault(scaleId);
+
+  return FONT_PAIRINGS.map((p) => {
+    const scale = generateTypeScale(16, preset.ratio, p.headingWeight, p.bodyWeight);
+
+    const data: TypographyData = {
+      headingFont: p.headingFont,
+      headingFontUrl: p.headingFontUrl,
+      bodyFont: p.bodyFont,
+      bodyFontUrl: p.bodyFontUrl,
+      monoFont: p.monoFont,
+      monoFontUrl: p.monoFontUrl,
+      scaleRatio: preset.ratio,
+      scaleName: preset.label,
+      scale,
+    };
+
+    return {
+      id: p.id,
+      category: "typography" as const,
+      name: p.name,
+      description: p.description,
+      data,
+    };
+  });
+}
+
+/**
+ * Collect all unique font URLs for loading
+ */
+export function getAllFontUrls(): string[] {
+  const urls = new Set<string>();
+  for (const p of FONT_PAIRINGS) {
+    if (p.headingFontUrl) urls.add(p.headingFontUrl);
+    if (p.bodyFontUrl) urls.add(p.bodyFontUrl);
+    if (p.monoFontUrl) urls.add(p.monoFontUrl);
+  }
+  return [...urls];
+}
+
+/**
+ * Get font URLs for a single pairing
+ */
+export function getFontUrlsForPairing(id: string): string[] {
+  const p = FONT_PAIRINGS.find((f) => f.id === id);
+  if (!p) return [];
+  const urls: string[] = [];
+  if (p.headingFontUrl) urls.push(p.headingFontUrl);
+  if (p.bodyFontUrl && p.bodyFontUrl !== p.headingFontUrl) urls.push(p.bodyFontUrl);
+  if (p.monoFontUrl) urls.push(p.monoFontUrl);
+  return urls;
+}

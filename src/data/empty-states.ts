@@ -1,0 +1,178 @@
+import type { CatalogItem, EmptyStateStyleData } from "@/lib/types";
+
+export type EmptyStateGroup = "Illustration" | "Minimal" | "Action";
+
+export interface EmptyStateMeta {
+  id: string;
+  group: EmptyStateGroup;
+}
+
+export const EMPTY_STATE_GROUPS: EmptyStateGroup[] = ["Illustration", "Minimal", "Action"];
+
+export const EMPTY_STATE_META: EmptyStateMeta[] = [
+  { id: "illustration-centered", group: "Illustration" },
+  { id: "friendly-fun", group: "Illustration" },
+  { id: "onboarding-step", group: "Illustration" },
+  { id: "icon-text", group: "Minimal" },
+  { id: "minimal", group: "Minimal" },
+  { id: "search-no-results", group: "Minimal" },
+  { id: "action-focused", group: "Action" },
+  { id: "error-themed", group: "Action" },
+  { id: "permissions-needed", group: "Action" },
+];
+
+export const emptyStateStyles: CatalogItem<EmptyStateStyleData>[] = [
+  {
+    id: "illustration-centered",
+    category: "empty-states",
+    name: "Illustration Centered",
+    description: "Large illustration with heading, body text, and a primary CTA button",
+    data: {
+      variant: "illustration-centered",
+      layout: "centered",
+      containerCss: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "24px" },
+      illustrationCss: { width: "80px", height: "80px", borderRadius: "9999px", marginBottom: "16px" },
+      hasIllustration: true,
+      hasIcon: false,
+      hasCta: true,
+      hasSecondaryAction: false,
+      tone: "neutral",
+    },
+  },
+  {
+    id: "friendly-fun",
+    category: "empty-states",
+    name: "Friendly & Fun",
+    description: "Playful illustration with warm copy and an inviting CTA",
+    data: {
+      variant: "friendly-fun",
+      layout: "centered",
+      containerCss: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "24px" },
+      illustrationCss: { width: "72px", height: "72px", borderRadius: "16px", marginBottom: "12px" },
+      hasIllustration: true,
+      hasIcon: false,
+      hasCta: true,
+      hasSecondaryAction: true,
+      tone: "friendly",
+    },
+  },
+  {
+    id: "onboarding-step",
+    category: "empty-states",
+    name: "Onboarding Step",
+    description: "Empty state that doubles as a first-run tutorial prompt",
+    data: {
+      variant: "onboarding-step",
+      layout: "top-heavy",
+      containerCss: { display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "24px" },
+      illustrationCss: { width: "64px", height: "64px", borderRadius: "12px", marginBottom: "12px" },
+      hasIllustration: true,
+      hasIcon: false,
+      hasCta: true,
+      hasSecondaryAction: true,
+      tone: "info",
+    },
+  },
+  {
+    id: "icon-text",
+    category: "empty-states",
+    name: "Icon + Text",
+    description: "Compact empty state with a small icon, heading, and subtitle",
+    data: {
+      variant: "icon-text",
+      layout: "centered",
+      containerCss: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "20px" },
+      illustrationCss: { width: "40px", height: "40px", borderRadius: "8px", marginBottom: "12px" },
+      hasIllustration: false,
+      hasIcon: true,
+      hasCta: false,
+      hasSecondaryAction: false,
+      tone: "neutral",
+    },
+  },
+  {
+    id: "minimal",
+    category: "empty-states",
+    name: "Minimal",
+    description: "Ultra-clean empty state — just a short message, nothing else",
+    data: {
+      variant: "minimal",
+      layout: "centered",
+      containerCss: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "32px" },
+      illustrationCss: {},
+      hasIllustration: false,
+      hasIcon: false,
+      hasCta: false,
+      hasSecondaryAction: false,
+      tone: "neutral",
+    },
+  },
+  {
+    id: "search-no-results",
+    category: "empty-states",
+    name: "Search No Results",
+    description: "Empty state for when a search query returns zero matches",
+    data: {
+      variant: "search-no-results",
+      layout: "centered",
+      containerCss: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "24px" },
+      illustrationCss: { width: "48px", height: "48px", borderRadius: "9999px", marginBottom: "12px" },
+      hasIllustration: false,
+      hasIcon: true,
+      hasCta: true,
+      hasSecondaryAction: false,
+      tone: "neutral",
+    },
+  },
+  {
+    id: "action-focused",
+    category: "empty-states",
+    name: "Action Focused",
+    description: "Large prominent CTA button with minimal supporting text",
+    data: {
+      variant: "action-focused",
+      layout: "centered",
+      containerCss: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "24px" },
+      illustrationCss: { width: "48px", height: "48px", borderRadius: "12px", marginBottom: "12px" },
+      hasIllustration: false,
+      hasIcon: true,
+      hasCta: true,
+      hasSecondaryAction: true,
+      tone: "neutral",
+    },
+  },
+  {
+    id: "error-themed",
+    category: "empty-states",
+    name: "Error Themed",
+    description: "Empty state with error-colored accents for failed-to-load scenarios",
+    data: {
+      variant: "error-themed",
+      layout: "centered",
+      containerCss: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "24px" },
+      illustrationCss: { width: "48px", height: "48px", borderRadius: "9999px", marginBottom: "12px" },
+      hasIllustration: false,
+      hasIcon: true,
+      hasCta: true,
+      hasSecondaryAction: false,
+      tone: "error",
+    },
+  },
+  {
+    id: "permissions-needed",
+    category: "empty-states",
+    name: "Permissions Needed",
+    description: "Empty state prompting the user to grant access or permissions",
+    data: {
+      variant: "permissions-needed",
+      layout: "centered",
+      containerCss: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "24px" },
+      illustrationCss: { width: "48px", height: "48px", borderRadius: "12px", marginBottom: "12px" },
+      hasIllustration: false,
+      hasIcon: true,
+      hasCta: true,
+      hasSecondaryAction: true,
+      tone: "info",
+    },
+  },
+];

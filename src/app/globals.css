@@ -1,26 +1,100 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-850: #1a1a1a;
+  --color-neutral-900: #171717;
+  --color-neutral-950: #0a0a0a;
+
+  /* App theme tokens — resolve at runtime via :root.dark / :root.light */
+  --color-app-bg: var(--app-bg);
+  --color-app-bg-alt: var(--app-bg-alt);
+  --color-app-surface: var(--app-surface);
+  --color-app-border: var(--app-border);
+  --color-app-border-hover: var(--app-border-hover);
+  --color-app-text: var(--app-text);
+  --color-app-text-secondary: var(--app-text-secondary);
+  --color-app-text-muted: var(--app-text-muted);
+  --color-app-card-bg: var(--app-card-bg);
+  --color-app-card-bg-hover: var(--app-card-bg-hover);
+  --color-app-card-bg-selected: var(--app-card-bg-selected);
+  --color-app-accent: var(--app-accent);
+  --color-app-accent-hover: var(--app-accent-hover);
+  --color-app-scrollbar: var(--app-scrollbar);
+  --color-app-scrollbar-hover: var(--app-scrollbar-hover);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── App theme: Dark (default) ─────────────────────── */
+:root.dark {
+  --app-bg: #0a0a0a;
+  --app-bg-alt: #171717;
+  --app-surface: #1a1a1a;
+  --app-border: #262626;
+  --app-border-hover: #404040;
+  --app-text: #f5f5f5;
+  --app-text-secondary: #a3a3a3;
+  --app-text-muted: #525252;
+  --app-card-bg: rgba(23, 23, 23, 0.5);
+  --app-card-bg-hover: rgba(38, 38, 38, 0.4);
+  --app-card-bg-selected: rgba(38, 38, 38, 0.6);
+  --app-accent: #3b82f6;
+  --app-accent-hover: #2563eb;
+  --app-scrollbar: #404040;
+  --app-scrollbar-hover: #525252;
+}
+
+/* ── App theme: Light ─────────────────────── */
+:root.light {
+  --app-bg: #ffffff;
+  --app-bg-alt: #fafafa;
+  --app-surface: #f5f5f5;
+  --app-border: #e5e5e5;
+  --app-border-hover: #d4d4d4;
+  --app-text: #171717;
+  --app-text-secondary: #525252;
+  --app-text-muted: #a3a3a3;
+  --app-card-bg: rgba(250, 250, 250, 0.6);
+  --app-card-bg-hover: rgba(245, 245, 245, 0.8);
+  --app-card-bg-selected: rgba(239, 246, 255, 0.6);
+  --app-accent: #2563eb;
+  --app-accent-hover: #1d4ed8;
+  --app-scrollbar: #d4d4d4;
+  --app-scrollbar-hover: #a3a3a3;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--app-bg);
+  color: var(--app-text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--app-scrollbar);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--app-scrollbar-hover);
 }
