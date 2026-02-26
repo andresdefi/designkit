@@ -13,7 +13,7 @@ export function TopBar({ title, description, itemCount }: TopBarProps) {
     useDesignKit();
 
   return (
-    <header className="h-14 border-b border-app-border flex items-center justify-between px-6 shrink-0 bg-app-bg/80 backdrop-blur-sm sticky top-0 z-10">
+    <header aria-label="Page controls" className="h-14 border-b border-app-border flex items-center justify-between px-6 shrink-0 bg-app-bg/80 backdrop-blur-sm sticky top-0 z-10">
       <div className="flex items-center gap-3">
         <h1 className="text-sm font-semibold text-app-text">{title}</h1>
         {description && (

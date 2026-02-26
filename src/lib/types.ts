@@ -565,239 +565,62 @@ export interface DesignConfig {
   };
   componentPreferences: {
     buttonStyle?: string;
-    buttonStyleDetails?: {
-      colorStrategy: string;
-      animation?: string;
-      supportsSizes: boolean;
-      supportsIcons: boolean;
-    };
+    buttonStyleDetails?: ButtonStyleData;
     inputStyle?: string;
-    inputStyleDetails?: {
-      variant: string;
-      subtype: string;
-      hasFloatingLabel: boolean;
-    };
+    inputStyleDetails?: InputStyleData;
     cardStyle?: string;
-    cardStyleDetails?: {
-      variant: string;
-      hasImage: boolean;
-      layout: string;
-    };
+    cardStyleDetails?: CardStyleData;
     navigationStyle?: string;
-    navigationStyleDetails?: {
-      variant: string;
-      subtype: string;
-      layout: string;
-      hasLogo: boolean;
-      hasAvatar: boolean;
-      position: string;
-    };
+    navigationStyleDetails?: NavigationStyleData;
     tabStyle?: string;
-    tabStyleDetails?: {
-      variant: string;
-      orientation: string;
-      indicatorStyle: string;
-      hasIcons: boolean;
-    };
+    tabStyleDetails?: TabStyleData;
     sidebarStyle?: string;
-    sidebarStyleDetails?: {
-      variant: string;
-      isCollapsible: boolean;
-      hasGroupHeaders: boolean;
-      width: string;
-    };
+    sidebarStyleDetails?: SidebarStyleData;
     modalStyle?: string;
-    modalStyleDetails?: {
-      variant: string;
-      subtype: string;
-      hasOverlay: boolean;
-      animationDirection: string;
-    };
+    modalStyleDetails?: ModalStyleData;
     heroStyle?: string;
-    heroStyleDetails?: {
-      variant: string;
-      layout: string;
-      hasImage: boolean;
-      hasGradient: boolean;
-      minHeight: string;
-    };
+    heroStyleDetails?: HeroStyleData;
     footerStyle?: string;
-    footerStyleDetails?: {
-      variant: string;
-      columns: number;
-      hasCta: boolean;
-      hasNewsletter: boolean;
-    };
+    footerStyleDetails?: FooterStyleData;
     badgeStyle?: string;
-    badgeStyleDetails?: {
-      variant: string;
-      shape: string;
-      hasDismiss: boolean;
-      hasIcon: boolean;
-      hasDot: boolean;
-    };
+    badgeStyleDetails?: BadgeStyleData;
     avatarStyle?: string;
-    avatarStyleDetails?: {
-      variant: string;
-      shape: string;
-      hasStatus: boolean;
-      hasBadge: boolean;
-      hasRing: boolean;
-      supportsGroup: boolean;
-    };
+    avatarStyleDetails?: AvatarStyleData;
     listStyle?: string;
-    listStyleDetails?: {
-      variant: string;
-      hasLeadingElement: boolean;
-      hasTrailingElement: boolean;
-      isGrouped: boolean;
-      isExpandable: boolean;
-    };
+    listStyleDetails?: ListStyleData;
     tableStyle?: string;
-    tableStyleDetails?: {
-      variant: string;
-      hasStickyHeader: boolean;
-      hasRowSelection: boolean;
-      density: string;
-    };
+    tableStyleDetails?: TableStyleData;
     pricingStyle?: string;
-    pricingStyleDetails?: {
-      variant: string;
-      layout: string;
-      isFeatured: boolean;
-      hasToggle: boolean;
-      hasTrialBadge: boolean;
-    };
+    pricingStyleDetails?: PricingStyleData;
     testimonialStyle?: string;
-    testimonialStyleDetails?: {
-      variant: string;
-      layout: string;
-      hasAvatar: boolean;
-      hasRating: boolean;
-      hasMedia: boolean;
-    };
+    testimonialStyleDetails?: TestimonialStyleData;
     statStyle?: string;
-    statStyleDetails?: {
-      variant: string;
-      layout: string;
-      hasIcon: boolean;
-      hasTrend: boolean;
-      hasChart: boolean;
-    };
+    statStyleDetails?: StatStyleData;
     dividerStyle?: string;
-    dividerStyleDetails?: {
-      variant: string;
-      style: string;
-      hasLabel: boolean;
-      hasIcon: boolean;
-      thickness: string;
-    };
+    dividerStyleDetails?: DividerStyleData;
     imageStyle?: string;
-    imageStyleDetails?: {
-      variant: string;
-      shape: string;
-      hasOverlay: boolean;
-      hasCaption: boolean;
-      aspectRatio?: string;
-    };
+    imageStyleDetails?: ImageStyleData;
     emptyStatePattern?: string;
-    emptyStatePatternDetails?: {
-      variant: string;
-      layout: string;
-      hasIllustration: boolean;
-      hasCta: boolean;
-      tone: string;
-    };
+    emptyStatePatternDetails?: EmptyStateStyleData;
     loadingPattern?: string;
-    loadingPatternDetails?: {
-      variant: string;
-      type: string;
-      animationStyle: string;
-      lineCount: number;
-      isFullPage: boolean;
-    };
+    loadingPatternDetails?: LoadingStyleData;
     onboardingPattern?: string;
-    onboardingPatternDetails?: {
-      variant: string;
-      layout: string;
-      hasStepIndicator: boolean;
-      hasSkipButton: boolean;
-      stepCount: number;
-    };
+    onboardingPatternDetails?: OnboardingStyleData;
     errorPattern?: string;
-    errorPatternDetails?: {
-      variant: string;
-      errorType: string;
-      hasErrorCode: boolean;
-      hasCta: boolean;
-      tone: string;
-    };
+    errorPatternDetails?: ErrorStyleData;
     successPattern?: string;
-    successPatternDetails?: {
-      variant: string;
-      type: string;
-      hasAnimation: boolean;
-      hasRedirect: boolean;
-      hasCta: boolean;
-    };
+    successPatternDetails?: SuccessStyleData;
     notificationPattern?: string;
-    notificationPatternDetails?: {
-      variant: string;
-      subtype: string;
-      position: string;
-      hasIcon: boolean;
-      hasAction: boolean;
-      isAutoDismiss: boolean;
-    };
+    notificationPatternDetails?: NotificationStyleData;
     buttonAnimation?: string;
-    buttonAnimationDetails?: {
-      variant: string;
-      subtype: string;
-      duration: string;
-      easing: string;
-      trigger: string;
-      cssKeyframes?: string;
-      cssProperties?: Record<string, string>;
-    };
+    buttonAnimationDetails?: AnimationData;
     hoverAnimation?: string;
-    hoverAnimationDetails?: {
-      variant: string;
-      subtype: string;
-      duration: string;
-      easing: string;
-      trigger: string;
-      cssKeyframes?: string;
-      cssProperties?: Record<string, string>;
-    };
+    hoverAnimationDetails?: AnimationData;
     pageTransition?: string;
-    pageTransitionDetails?: {
-      variant: string;
-      subtype: string;
-      duration: string;
-      easing: string;
-      trigger: string;
-      cssKeyframes?: string;
-      cssProperties?: Record<string, string>;
-    };
+    pageTransitionDetails?: AnimationData;
     microInteraction?: string;
-    microInteractionDetails?: {
-      variant: string;
-      subtype: string;
-      duration: string;
-      easing: string;
-      trigger: string;
-      cssKeyframes?: string;
-      cssProperties?: Record<string, string>;
-    };
+    microInteractionDetails?: AnimationData;
     entranceAnimation?: string;
-    entranceAnimationDetails?: {
-      variant: string;
-      subtype: string;
-      duration: string;
-      easing: string;
-      trigger: string;
-      cssKeyframes?: string;
-      cssProperties?: Record<string, string>;
-    };
+    entranceAnimationDetails?: AnimationData;
   };
 }

@@ -44,7 +44,7 @@
   --app-border-hover: #404040;
   --app-text: #f5f5f5;
   --app-text-secondary: #a3a3a3;
-  --app-text-muted: #525252;
+  --app-text-muted: #6b6b6b;
   --app-card-bg: rgba(23, 23, 23, 0.5);
   --app-card-bg-hover: rgba(38, 38, 38, 0.4);
   --app-card-bg-selected: rgba(38, 38, 38, 0.6);
@@ -63,7 +63,7 @@
   --app-border-hover: #d4d4d4;
   --app-text: #171717;
   --app-text-secondary: #525252;
-  --app-text-muted: #a3a3a3;
+  --app-text-muted: #8a8a8a;
   --app-card-bg: rgba(250, 250, 250, 0.6);
   --app-card-bg-hover: rgba(245, 245, 245, 0.8);
   --app-card-bg-selected: rgba(239, 246, 255, 0.6);
@@ -78,6 +78,24 @@ body {
   color: var(--app-text);
   font-family: var(--font-sans), system-ui, sans-serif;
   transition: background-color 0.2s, color 0.2s;
+}
+
+/* Reduced motion — disable animations for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus indicators — visible ring on keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--app-accent);
+  outline-offset: 2px;
 }
 
 /* Scrollbar */

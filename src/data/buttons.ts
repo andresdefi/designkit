@@ -1,13 +1,13 @@
 import type { CatalogItem, ButtonStyleData } from "@/lib/types";
 
-export type ButtonGroup = "Solid" | "Outline" | "Ghost" | "Soft" | "Special";
+export type ButtonGroup = "Solid" | "Outline" | "Ghost" | "Soft" | "Special" | "Playful";
 
 export interface ButtonMeta {
   id: string;
   group: ButtonGroup;
 }
 
-export const BUTTON_GROUPS: ButtonGroup[] = ["Solid", "Outline", "Ghost", "Soft", "Special"];
+export const BUTTON_GROUPS: ButtonGroup[] = ["Solid", "Outline", "Ghost", "Soft", "Special", "Playful"];
 
 export const BUTTON_META: ButtonMeta[] = [
   // Solid
@@ -65,6 +65,12 @@ export const BUTTON_META: ButtonMeta[] = [
   { id: "paper-fold", group: "Special" },
   { id: "cyberpunk", group: "Special" },
   { id: "minimal-line", group: "Special" },
+  // Playful
+  { id: "confetti-pop", group: "Playful" },
+  { id: "wobble-jelly", group: "Playful" },
+  { id: "rainbow-shift", group: "Playful" },
+  { id: "bubble-float", group: "Playful" },
+  { id: "bouncy-squish", group: "Playful" },
 ];
 
 // NOTE on color strategy:
@@ -999,6 +1005,103 @@ export const buttonStyles: CatalogItem<ButtonStyleData>[] = [
       },
       supportsSizes: true,
       supportsIcons: false,
+    },
+  },
+
+  // ── Playful ─────────────────────────────────────────
+  {
+    id: "confetti-pop",
+    category: "buttons",
+    name: "Confetti Pop",
+    description: "Bursts outward with a celebratory scale and shadow explosion on click",
+    data: {
+      variant: "special",
+      colorStrategy: "gradient",
+      css: {
+        default: { border: "none", borderRadius: "14px", backgroundSize: "200% 200%", backgroundPosition: "0% 50%", boxShadow: "0 2px 8px __primary-20", transition: "transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 300ms cubic-bezier(0.34, 1.56, 0.64, 1), background-position 400ms ease" },
+        hover: { transform: "scale(1.06) rotate(-1deg)", boxShadow: "0 8px 24px __primary-30, 0 0 0 4px __accent-15", backgroundPosition: "100% 50%" },
+        active: { transform: "scale(0.92) rotate(1deg)", boxShadow: "0 2px 4px __primary-15" },
+        disabled: { opacity: "0.5", cursor: "not-allowed", boxShadow: "none" },
+      },
+      supportsSizes: true,
+      supportsIcons: true,
+      animation: "confetti",
+    },
+  },
+  {
+    id: "wobble-jelly",
+    category: "buttons",
+    name: "Wobble Jelly",
+    description: "Squishy jelly button that wobbles and deforms playfully on hover",
+    data: {
+      variant: "special",
+      colorStrategy: "solid",
+      css: {
+        default: { border: "none", borderRadius: "16px", boxShadow: "0 4px 12px __primary-20", transition: "transform 400ms cubic-bezier(0.25, 1.5, 0.5, 1), border-radius 400ms cubic-bezier(0.25, 1.5, 0.5, 1), box-shadow 300ms ease" },
+        hover: { transform: "scale(1.05) rotate(-2deg)", borderRadius: "20px 8px 20px 8px", boxShadow: "0 8px 20px __primary-30" },
+        active: { transform: "scale(0.9) rotate(2deg)", borderRadius: "8px 20px 8px 20px", boxShadow: "0 2px 6px __primary-15" },
+        disabled: { opacity: "0.5", cursor: "not-allowed", boxShadow: "none" },
+      },
+      supportsSizes: true,
+      supportsIcons: true,
+      animation: "wobble",
+    },
+  },
+  {
+    id: "rainbow-shift",
+    category: "buttons",
+    name: "Rainbow Shift",
+    description: "Smoothly cycles through a vivid rainbow gradient on hover",
+    data: {
+      variant: "special",
+      colorStrategy: "gradient",
+      css: {
+        default: { border: "none", borderRadius: "9999px", backgroundSize: "300% 300%", backgroundPosition: "0% 50%", boxShadow: "0 3px 10px __primary-15", fontWeight: "600", transition: "background-position 600ms ease, transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 300ms ease" },
+        hover: { backgroundPosition: "100% 50%", transform: "scale(1.04) translateY(-2px)", boxShadow: "0 6px 20px __accent-25" },
+        active: { backgroundPosition: "50% 100%", transform: "scale(0.96)", boxShadow: "0 2px 6px __primary-10" },
+        disabled: { opacity: "0.5", cursor: "not-allowed", boxShadow: "none" },
+      },
+      supportsSizes: true,
+      supportsIcons: true,
+      animation: "rainbow",
+    },
+  },
+  {
+    id: "bubble-float",
+    category: "buttons",
+    name: "Bubble Float",
+    description: "Floats up gently like a bubble with a soft glowing aura",
+    data: {
+      variant: "special",
+      colorStrategy: "soft",
+      css: {
+        default: { border: "2px solid __primary-20", borderRadius: "24px", boxShadow: "0 4px 14px __primary-15, inset 0 1px 0 rgba(255,255,255,0.25)", transition: "transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 500ms cubic-bezier(0.34, 1.56, 0.64, 1), border-color 300ms ease" },
+        hover: { transform: "translateY(-6px) scale(1.03)", boxShadow: "0 14px 32px __primary-25, 0 0 0 6px __primary-08, inset 0 1px 0 rgba(255,255,255,0.3)", borderColor: "__primary-35" },
+        active: { transform: "translateY(-2px) scale(0.97)", boxShadow: "0 4px 10px __primary-15, inset 0 1px 0 rgba(255,255,255,0.2)" },
+        disabled: { opacity: "0.5", cursor: "not-allowed", boxShadow: "none" },
+      },
+      supportsSizes: true,
+      supportsIcons: true,
+      animation: "float",
+    },
+  },
+  {
+    id: "bouncy-squish",
+    category: "buttons",
+    name: "Bouncy Squish",
+    description: "Squashes on press and springs back with an elastic bounce",
+    data: {
+      variant: "special",
+      colorStrategy: "solid",
+      css: {
+        default: { border: "none", borderRadius: "12px", boxShadow: "0 4px 0 rgba(0,0,0,0.2), 0 6px 12px __primary-15", transition: "transform 350ms cubic-bezier(0.34, 2, 0.64, 1), box-shadow 350ms cubic-bezier(0.34, 2, 0.64, 1), border-radius 300ms ease" },
+        hover: { transform: "translateY(-3px) scaleX(1.04) scaleY(1.02)", borderRadius: "14px", boxShadow: "0 7px 0 rgba(0,0,0,0.2), 0 10px 20px __primary-25" },
+        active: { transform: "translateY(3px) scaleX(1.08) scaleY(0.92)", borderRadius: "10px 10px 14px 14px", boxShadow: "0 1px 0 rgba(0,0,0,0.2), 0 2px 4px __primary-10" },
+        disabled: { opacity: "0.5", cursor: "not-allowed", boxShadow: "none" },
+      },
+      supportsSizes: true,
+      supportsIcons: true,
+      animation: "bounce",
     },
   },
 ];

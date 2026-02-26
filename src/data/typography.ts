@@ -2,7 +2,7 @@ import type { TypographyItem, TypographyData } from "@/lib/types";
 import { generateTypeScale, getPresetByIdOrDefault } from "@/lib/typography-utils";
 
 // ============================================================
-// Font pairing metadata — 50 pairings across 6 groups
+// Font pairing metadata — 51 pairings across 6 groups
 // ============================================================
 
 export type TypographyGroup =
@@ -353,7 +353,7 @@ export const FONT_PAIRINGS: FontPairing[] = [
     bodyWeight: 400,
   },
 
-  // ── Bold / Statement (9) ──────────────────────────────────────
+  // ── Bold / Statement (10) ─────────────────────────────────────
   {
     id: "clash-satoshi",
     group: "Bold / Statement",
@@ -460,6 +460,18 @@ export const FONT_PAIRINGS: FontPairing[] = [
     bodyFont: "Inter",
     bodyFontUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
     headingWeight: 800,
+    bodyWeight: 400,
+  },
+  {
+    id: "outfit-dm-sans",
+    group: "Bold / Statement",
+    name: "Outfit + DM Sans",
+    description: "Geometric rounded headings with clean readable body",
+    headingFont: "Outfit",
+    headingFontUrl: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap",
+    bodyFont: "DM Sans",
+    bodyFontUrl: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap",
+    headingWeight: 700,
     bodyWeight: 400,
   },
 

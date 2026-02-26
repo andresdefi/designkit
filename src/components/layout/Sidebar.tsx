@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { categoryGroups, getCategoriesByGroup } from "@/lib/categories";
@@ -8,11 +9,32 @@ import { useDesignKit } from "@/lib/store";
 export function Sidebar() {
   const pathname = usePathname();
   const { selections, sidebarCollapsed, toggleSidebar, appTheme, toggleAppTheme } = useDesignKit();
+  const [helpOpen, setHelpOpen] = useState(false);
+  const helpRef = useRef<HTMLDivElement>(null);
 
   const selectionCount = Object.keys(selections).length;
 
+  useEffect(() => {
+    if (!helpOpen) return;
+    function handleClick(e: MouseEvent) {
+      if (helpRef.current && !helpRef.current.contains(e.target as Node)) {
+        setHelpOpen(false);
+      }
+    }
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setHelpOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [helpOpen]);
+
   return (
     <aside
+      aria-label="Navigation sidebar"
       className={`h-dvh border-r border-app-border bg-app-bg flex flex-col transition-all duration-200 ${
         sidebarCollapsed ? "w-16" : "w-64"
       }`}
@@ -75,7 +97,7 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* Footer — theme toggle + selection count */}
+      {/* Footer — theme toggle + selection count + help */}
       {!sidebarCollapsed && (
         <div className="px-4 py-3 border-t border-app-border shrink-0 space-y-2">
           <button
@@ -86,12 +108,40 @@ export function Sidebar() {
             <span className="text-sm">{appTheme === "dark" ? "☀️" : "🌙"}</span>
             <span>{appTheme === "dark" ? "Light mode" : "Dark mode"}</span>
           </button>
-          <div className="text-xs text-app-text-muted">
-            {selectionCount > 0 ? (
-              <span>{selectionCount} selected</span>
-            ) : (
-              <span>No selections yet</span>
-            )}
+          <div className="flex items-center justify-between">
+            <div className="text-xs text-app-text-muted">
+              {selectionCount > 0 ? (
+                <span>{selectionCount} selected</span>
+              ) : (
+                <span>No selections yet</span>
+              )}
+            </div>
+            <div className="relative" ref={helpRef}>
+              <button
+                onClick={() => setHelpOpen((p) => !p)}
+                className="text-xs text-app-text-muted hover:text-app-text-secondary transition-colors p-0.5"
+                aria-label="Help and keyboard shortcuts"
+              >
+                ?
+              </button>
+              {helpOpen && (
+                <div className="absolute bottom-full left-0 mb-2 w-56 rounded-lg border border-app-border bg-app-bg shadow-lg p-3 z-50">
+                  <div className="text-xs font-semibold text-app-text mb-2">DesignKit</div>
+                  <p className="text-[10px] text-app-text-muted mb-3">
+                    Build your design identity by selecting options from each category. Export the result or consume via the MCP server.
+                  </p>
+                  <div className="text-[10px] font-semibold text-app-text-secondary mb-1">Shortcuts</div>
+                  <div className="space-y-0.5 text-[10px] text-app-text-muted">
+                    <div className="flex justify-between"><span>Command palette</span><kbd className="text-app-text-secondary">Cmd+K</kbd></div>
+                    <div className="flex justify-between"><span>Undo</span><kbd className="text-app-text-secondary">Cmd+Z</kbd></div>
+                    <div className="flex justify-between"><span>Redo</span><kbd className="text-app-text-secondary">Cmd+Shift+Z</kbd></div>
+                    <div className="flex justify-between"><span>Navigate grid</span><kbd className="text-app-text-secondary">Arrow keys</kbd></div>
+                    <div className="flex justify-between"><span>Select / deselect</span><kbd className="text-app-text-secondary">Enter</kbd></div>
+                    <div className="flex justify-between"><span>Close / deselect</span><kbd className="text-app-text-secondary">Esc</kbd></div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

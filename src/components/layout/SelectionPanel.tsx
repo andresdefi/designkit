@@ -10,8 +10,11 @@ export function SelectionPanel() {
   const {
     selections, colorPicks, deselect, resetAll, previewOpen,
     unpickColor, resetColorPicks, locked, toggleLock, randomizeCategory,
+    presets, savePreset, loadPreset, deletePreset,
   } = useDesignKit();
   const [exportOpen, setExportOpen] = useState(false);
+  const [presetName, setPresetName] = useState("");
+  const [showPresetInput, setShowPresetInput] = useState(false);
 
   if (!previewOpen) return null;
 
@@ -23,7 +26,7 @@ export function SelectionPanel() {
 
   return (
     <>
-      <aside className="w-72 h-dvh border-l border-app-border bg-app-bg flex flex-col shrink-0">
+      <aside aria-label="Selection panel" className="w-72 h-dvh border-l border-app-border bg-app-bg flex flex-col shrink-0">
         {/* Header */}
         <div className="flex items-center justify-between px-4 h-14 border-b border-app-border shrink-0">
           <span className="text-sm font-semibold text-app-text">Selections</span>
@@ -134,6 +137,91 @@ export function SelectionPanel() {
           )}
         </div>
 
+        {/* Presets */}
+        <div className="px-4 py-3 border-t border-app-border shrink-0">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-app-text-muted">
+              Presets
+            </span>
+            {hasAnything && !showPresetInput && (
+              <button
+                onClick={() => setShowPresetInput(true)}
+                className="text-[10px] text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                Save current
+              </button>
+            )}
+          </div>
+
+          {showPresetInput && (
+            <form
+              className="flex gap-1.5 mb-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const name = presetName.trim();
+                if (!name) return;
+                savePreset(name);
+                setPresetName("");
+                setShowPresetInput(false);
+              }}
+            >
+              <input
+                value={presetName}
+                onChange={(e) => setPresetName(e.target.value)}
+                placeholder="Preset name..."
+                aria-label="Preset name"
+                className="flex-1 min-w-0 px-2 py-1 text-xs bg-app-surface border border-app-border rounded text-app-text placeholder:text-app-text-muted outline-none focus:border-blue-500"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") {
+                    setShowPresetInput(false);
+                    setPresetName("");
+                  }
+                }}
+              />
+              <button
+                type="submit"
+                className="px-2 py-1 text-[10px] font-medium bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors"
+              >
+                Save
+              </button>
+            </form>
+          )}
+
+          {presets.length === 0 ? (
+            <p className="text-[10px] text-app-text-muted opacity-60">
+              No saved presets
+            </p>
+          ) : (
+            <div className="space-y-1 max-h-32 overflow-y-auto">
+              {presets.map((p) => (
+                <div
+                  key={p.id}
+                  className="flex items-center gap-1.5 group"
+                >
+                  <button
+                    onClick={() => loadPreset(p.id)}
+                    className="flex-1 min-w-0 text-left text-xs text-app-text-secondary hover:text-app-text truncate transition-colors"
+                    title={`Load "${p.name}"`}
+                  >
+                    {p.name}
+                  </button>
+                  <span className="text-[9px] text-app-text-muted shrink-0">
+                    {Object.keys(p.selections).length}
+                  </span>
+                  <button
+                    onClick={() => deletePreset(p.id)}
+                    className="text-app-text-muted hover:text-red-400 transition-colors text-[10px] opacity-0 group-hover:opacity-100 shrink-0"
+                    aria-label={`Delete preset "${p.name}"`}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Export button */}
         {hasAnything && (
           <div className="p-4 border-t border-app-border shrink-0">
@@ -175,6 +263,7 @@ function ColorPickList({
             onClick={() => onRemove(key)}
             className="group flex items-center gap-1 bg-app-card-bg rounded px-1.5 py-0.5 hover:bg-red-500/10 transition-colors"
             title={`${key}: ${value} — click to remove`}
+            aria-label={`Remove ${key} color pick`}
           >
             <div
               className="w-3 h-3 rounded-sm border border-app-border/30"

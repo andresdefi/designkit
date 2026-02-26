@@ -12,6 +12,52 @@ interface ColorPicks {
   [key: string]: string;
 }
 
+// Named presets
+const PRESETS_KEY = "designkit-presets";
+
+export interface Preset {
+  id: string;
+  name: string;
+  selections: Selections;
+  colorPicks: { light: ColorPicks; dark: ColorPicks };
+  typeScale: string;
+  createdAt: number;
+}
+
+function loadPresets(): Preset[] {
+  if (typeof window === "undefined") return [];
+  try {
+    return JSON.parse(localStorage.getItem(PRESETS_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function savePresets(presets: Preset[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(PRESETS_KEY, JSON.stringify(presets));
+}
+
+// Undo/redo history
+interface DesignSnapshot {
+  selections: Selections;
+  colorPicks: { light: ColorPicks; dark: ColorPicks };
+  typeScale: string;
+}
+
+const MAX_HISTORY = 50;
+let _undoStack: DesignSnapshot[] = [];
+let _redoStack: DesignSnapshot[] = [];
+let _skipSnapshot = false;
+
+function takeSnapshot(state: { selections: Selections; colorPicks: { light: ColorPicks; dark: ColorPicks }; typeScale: string }): DesignSnapshot {
+  return {
+    selections: { ...state.selections },
+    colorPicks: { light: { ...state.colorPicks.light }, dark: { ...state.colorPicks.dark } },
+    typeScale: state.typeScale,
+  };
+}
+
 interface DesignKitStore {
   // Selections — one item ID per category
   selections: Selections;
@@ -52,6 +98,19 @@ interface DesignKitStore {
   toggleAppTheme: () => void;
   sidebarCollapsed: boolean;
   toggleSidebar: () => void;
+
+  // Named presets
+  presets: Preset[];
+  savePreset: (name: string) => void;
+  loadPreset: (id: string) => void;
+  deletePreset: (id: string) => void;
+  renamePreset: (id: string, name: string) => void;
+
+  // Undo/redo
+  canUndo: boolean;
+  canRedo: boolean;
+  undo: () => void;
+  redo: () => void;
 }
 
 export const useDesignKit = create<DesignKitStore>()(
@@ -152,6 +211,90 @@ export const useDesignKit = create<DesignKitStore>()(
         set((s) => ({ appTheme: s.appTheme === "dark" ? "light" : "dark" })),
       sidebarCollapsed: false,
       toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+
+      // Named presets
+      presets: loadPresets(),
+
+      savePreset: (name) => {
+        const state = get();
+        const preset: Preset = {
+          id: `preset-${Date.now()}`,
+          name,
+          selections: { ...state.selections },
+          colorPicks: {
+            light: { ...state.colorPicks.light },
+            dark: { ...state.colorPicks.dark },
+          },
+          typeScale: state.typeScale,
+          createdAt: Date.now(),
+        };
+        const next = [...get().presets, preset];
+        savePresets(next);
+        set({ presets: next });
+      },
+
+      loadPreset: (id) => {
+        const preset = get().presets.find((p) => p.id === id);
+        if (!preset) return;
+        set({
+          selections: { ...preset.selections },
+          colorPicks: {
+            light: { ...preset.colorPicks.light },
+            dark: { ...preset.colorPicks.dark },
+          },
+          typeScale: preset.typeScale,
+        });
+      },
+
+      deletePreset: (id) => {
+        const next = get().presets.filter((p) => p.id !== id);
+        savePresets(next);
+        set({ presets: next });
+      },
+
+      renamePreset: (id, name) => {
+        const next = get().presets.map((p) =>
+          p.id === id ? { ...p, name } : p
+        );
+        savePresets(next);
+        set({ presets: next });
+      },
+
+      // Undo/redo
+      canUndo: false,
+      canRedo: false,
+
+      undo: () => {
+        if (_undoStack.length === 0) return;
+        const current = takeSnapshot(get());
+        _redoStack.push(current);
+        const prev = _undoStack.pop()!;
+        _skipSnapshot = true;
+        set({
+          selections: prev.selections,
+          colorPicks: prev.colorPicks,
+          typeScale: prev.typeScale,
+          canUndo: _undoStack.length > 0,
+          canRedo: true,
+        });
+        _skipSnapshot = false;
+      },
+
+      redo: () => {
+        if (_redoStack.length === 0) return;
+        const current = takeSnapshot(get());
+        _undoStack.push(current);
+        const next = _redoStack.pop()!;
+        _skipSnapshot = true;
+        set({
+          selections: next.selections,
+          colorPicks: next.colorPicks,
+          typeScale: next.typeScale,
+          canUndo: true,
+          canRedo: _redoStack.length > 0,
+        });
+        _skipSnapshot = false;
+      },
     }),
     {
       name: "designkit-selections",
@@ -165,17 +308,19 @@ export const useDesignKit = create<DesignKitStore>()(
         locked: state.locked,
         deviceFrame: state.deviceFrame,
         previewZoom: state.previewZoom,
+        sidebarCollapsed: state.sidebarCollapsed,
+        previewOpen: state.previewOpen,
       }),
     }
   )
 );
 
-// Auto-sync selections to the API (browser only)
+// Auto-sync selections to the API + undo history (browser only)
 if (typeof window !== "undefined") {
   let syncTimer: ReturnType<typeof setTimeout> | null = null;
 
   useDesignKit.subscribe((state, prev) => {
-    // Only sync when design-relevant state changes
+    // Only react when design-relevant state changes
     if (
       state.selections === prev.selections &&
       state.colorPicks === prev.colorPicks &&
@@ -184,6 +329,15 @@ if (typeof window !== "undefined") {
       return;
     }
 
+    // Push previous state onto undo stack (unless this change came from undo/redo)
+    if (!_skipSnapshot) {
+      _undoStack.push(takeSnapshot(prev));
+      if (_undoStack.length > MAX_HISTORY) _undoStack.shift();
+      _redoStack = [];
+      useDesignKit.setState({ canUndo: true, canRedo: false });
+    }
+
+    // Debounced API sync
     if (syncTimer) clearTimeout(syncTimer);
     syncTimer = setTimeout(() => {
       fetch("/api/designkit/state", {
@@ -198,5 +352,19 @@ if (typeof window !== "undefined") {
         // Silent — localStorage remains primary persistence
       });
     }, 500);
+  });
+
+  // Cmd+Z / Cmd+Shift+Z global keyboard shortcuts
+  document.addEventListener("keydown", (e) => {
+    if (!(e.metaKey || e.ctrlKey) || e.key !== "z") return;
+    // Don't intercept when focus is in an input/textarea
+    const tag = (e.target as HTMLElement)?.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || (e.target as HTMLElement)?.isContentEditable) return;
+    e.preventDefault();
+    if (e.shiftKey) {
+      useDesignKit.getState().redo();
+    } else {
+      useDesignKit.getState().undo();
+    }
   });
 }

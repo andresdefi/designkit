@@ -376,7 +376,7 @@ Claude Code Agent
 - [x] CLI setup command: `npx designkit-mcp init` — adds MCP server to Claude Code config
 - [x] CLI doctor command: `npx designkit-mcp doctor` — checks connectivity + config
 - [x] Write CLAUDE.md instructions for using the MCP tools when building apps
-- [ ] Test end-to-end: select a design identity in DesignKit → ask Claude Code to "build a settings screen using my DesignKit config" → verify it uses the correct tokens
+- [x] Test end-to-end: select a design identity in DesignKit → ask Claude Code to "build a settings screen using my DesignKit config" → verify it uses the correct tokens
 
 **Checkpoint:** Claude Code can read your live DesignKit selections. When building any app, you say "use my DesignKit config" and Claude generates screens matching your chosen identity — correct colors, fonts, spacing, radius, shadows, and button styles. No manual export needed.
 
@@ -858,40 +858,40 @@ Turn selections into usable files for your projects.
 
 ---
 
-## Phase 16: Generative Expansion (CLI)
+## Phase 16: Generative Expansion (CLI) ✅
 
 Structure the project so new variations can be added via Claude Code.
 
-- [ ] Document the data format for each category:
-  - [ ] Color palette format (ColorPaletteData with light/dark/primaryScale)
-  - [ ] Typography pairing format (fonts, weights, type scale definition)
-  - [ ] Spacing system format (base unit, named values)
-  - [ ] Radius system format (named values per element type)
-  - [ ] Shadow system format (named levels with box-shadow values)
-  - [ ] Button style format (variant definition, CSS/class mapping, state styles)
-  - [ ] Input style format (variant definition, label behavior, state styles)
-  - [ ] Card style format (variant definition, padding, elevation, border)
-  - [ ] Navigation style format (layout, items, responsive behavior)
-  - [ ] Content component format (variant per sub-category)
-  - [ ] UX pattern format (layout, content slots, animation refs)
-  - [ ] Animation format (keyframes, easing, duration, trigger type)
-- [ ] Create `.claude/CLAUDE.md` for the designkit project itself:
-  - [ ] Project architecture overview (pages, components, lib, data)
-  - [ ] Data file locations and naming conventions
-  - [ ] How to add a new catalog item (step-by-step with code example)
-  - [ ] How to add a new category (route, data file, sidebar entry, types)
-  - [ ] Code style rules (functional components, named exports, app-* theme classes)
-  - [ ] Testing guidance (what to verify after adding items)
-- [ ] Test generative expansion:
-  - [ ] Ask Claude Code to "add 5 more button styles that feel playful" → verify they appear
-  - [ ] Ask Claude Code to "add a new color palette inspired by the ocean at sunset" → verify it works
-  - [ ] Ask Claude Code to "add a typography pairing using Outfit + DM Sans" → verify it loads
-- [ ] Structure for future in-app AI panel:
-  - [ ] API route stub (`POST /api/generate`) for AI-assisted generation
-  - [ ] Chat component placeholder (floating panel, message input)
-  - [ ] Prompt template library (pre-built prompts for each category)
+- [x] Document the data format for each category:
+  - [x] Color palette format (ColorPaletteData with light/dark/primaryScale)
+  - [x] Typography pairing format (fonts, weights, type scale definition)
+  - [x] Spacing system format (base unit, named values)
+  - [x] Radius system format (named values per element type)
+  - [x] Shadow system format (named levels with box-shadow values)
+  - [x] Button style format (variant definition, CSS/class mapping, state styles)
+  - [x] Input style format (variant definition, label behavior, state styles)
+  - [x] Card style format (variant definition, padding, elevation, border)
+  - [x] Navigation style format (layout, items, responsive behavior)
+  - [x] Content component format (variant per sub-category)
+  - [x] UX pattern format (layout, content slots, animation refs)
+  - [x] Animation format (keyframes, easing, duration, trigger type)
+- [x] Create `.claude/CLAUDE.md` for the designkit project itself:
+  - [x] Project architecture overview (pages, components, lib, data)
+  - [x] Data file locations and naming conventions
+  - [x] How to add a new catalog item (step-by-step with code example)
+  - [x] How to add a new category (route, data file, sidebar entry, types)
+  - [x] Code style rules (functional components, named exports, app-* theme classes)
+  - [x] Testing guidance (what to verify after adding items)
+- [x] Test generative expansion:
+  - [x] Ask Claude Code to "add 5 more button styles that feel playful" → verify they appear
+  - [x] Ask Claude Code to "add a new color palette inspired by the ocean at sunset" → verify it works
+  - [x] Ask Claude Code to "add a typography pairing using Outfit + DM Sans" → verify it loads
+- [x] Structure for future in-app AI panel:
+  - [x] API route stub (`POST /api/generate`) for AI-assisted generation
+  - [x] Chat component placeholder (floating panel, message input)
+  - [x] Prompt template library (pre-built prompts for each category)
 
-**Checkpoint:** You can expand the library by chatting with Claude Code. The `.claude/CLAUDE.md` gives Claude full context. New items follow existing data formats and appear in the app after refresh. Future in-app AI panel is stubbed out.
+**Checkpoint:** ✅ You can expand the library by chatting with Claude Code. The `.claude/CLAUDE.md` gives Claude full context. `src/data/DATA_FORMATS.md` documents all 30 data types with examples. New items follow existing data formats and appear in the app after refresh. Validated with 3 expansion tests (buttons, colors, typography). Future in-app AI panel stubbed with GeneratePanel component, API route, and 20 prompt templates.
 
 ---
 
@@ -975,7 +975,7 @@ Final pass to make the tool itself feel solid.
 | 13. Motion | 60+ animations | High — interaction code + easing |
 | 14. Combined preview | 25+ tasks | ✅ Complete |
 | 15. Config export | 40+ tasks | ✅ Complete |
-| 16. Generative expansion | 20+ tasks | Medium — documentation + testing |
+| 16. Generative expansion | 20+ tasks | ✅ Complete |
 | 17. Polish & QA | 35+ tasks | High — accessibility, perf, validation |
 
 **Total catalog items: 400+**

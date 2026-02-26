@@ -27,6 +27,8 @@ export function CatalogCard({ category, itemId, name, description, children }: C
   return (
     <button
       onClick={handleClick}
+      aria-label={`${selected ? "Deselect" : "Select"} ${name}${description ? ": " + description : ""}`}
+      aria-pressed={selected}
       className={`group relative text-left rounded-xl border transition-all duration-150 overflow-hidden ${
         selected
           ? "border-blue-500 ring-1 ring-blue-500/30 bg-app-card-bg-selected"

@@ -90,6 +90,9 @@ export function exportCSS(config: DesignConfig): string {
     }
   }
 
+  // Component CSS classes
+  appendComponentCssClasses(lines, config);
+
   return lines.join("\n");
 }
 
@@ -509,297 +512,349 @@ export function exportClaudeMd(config: DesignConfig): string {
       lines.push(`- Supports sizes: ${details.supportsSizes ? "sm, md, lg" : "no"}`);
       lines.push(`- Supports icons: ${details.supportsIcons ? "yes" : "no"}`);
       lines.push("");
+      appendStatefulCss(lines, details.css);
     }
   }
   if (config.componentPreferences.cardStyle) {
     lines.push(`## Card Style: ${config.componentPreferences.cardStyle}`, "");
-    const cardDetails = config.componentPreferences.cardStyleDetails;
-    if (cardDetails) {
-      lines.push(`- Variant: ${cardDetails.variant}`);
-      lines.push(`- Layout: ${cardDetails.layout}`);
-      lines.push(`- Has image: ${cardDetails.hasImage ? "yes" : "no"}`);
+    const d = config.componentPreferences.cardStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Layout: ${d.layout}`);
+      lines.push(`- Has image: ${d.hasImage ? "yes" : "no"}`);
       lines.push("");
+      appendFlatCss(lines, "default", d.css);
+      if (d.hoverCss) appendFlatCss(lines, "hover", d.hoverCss);
     }
   }
   if (config.componentPreferences.inputStyle) {
     lines.push(`## Input Style: ${config.componentPreferences.inputStyle}`, "");
-    const details = config.componentPreferences.inputStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Subtype: ${details.subtype}`);
-      lines.push(`- Floating label: ${details.hasFloatingLabel ? "yes" : "no"}`);
+    const d = config.componentPreferences.inputStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Subtype: ${d.subtype}`);
+      lines.push(`- Floating label: ${d.hasFloatingLabel ? "yes" : "no"}`);
       lines.push("");
+      appendStatefulCss(lines, d.css);
     }
   }
 
   if (config.componentPreferences.navigationStyle) {
     lines.push(`## Navigation Style: ${config.componentPreferences.navigationStyle}`, "");
-    const details = config.componentPreferences.navigationStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Subtype: ${details.subtype}`);
-      lines.push(`- Layout: ${details.layout}`);
-      lines.push(`- Has logo: ${details.hasLogo ? "yes" : "no"}`);
-      lines.push(`- Has avatar: ${details.hasAvatar ? "yes" : "no"}`);
-      lines.push(`- Position: ${details.position}`);
+    const d = config.componentPreferences.navigationStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Subtype: ${d.subtype}`);
+      lines.push(`- Layout: ${d.layout}`);
+      lines.push(`- Has logo: ${d.hasLogo ? "yes" : "no"}`);
+      lines.push(`- Has avatar: ${d.hasAvatar ? "yes" : "no"}`);
+      lines.push(`- Position: ${d.position}`);
       lines.push("");
+      appendFlatCss(lines, "default", d.css);
+      if (d.hoverCss) appendFlatCss(lines, "hover", d.hoverCss);
     }
   }
 
   if (config.componentPreferences.tabStyle) {
     lines.push(`## Tab Style: ${config.componentPreferences.tabStyle}`, "");
-    const details = config.componentPreferences.tabStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Orientation: ${details.orientation}`);
-      lines.push(`- Indicator: ${details.indicatorStyle}`);
-      lines.push(`- Has icons: ${details.hasIcons ? "yes" : "no"}`);
+    const d = config.componentPreferences.tabStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Orientation: ${d.orientation}`);
+      lines.push(`- Indicator: ${d.indicatorStyle}`);
+      lines.push(`- Has icons: ${d.hasIcons ? "yes" : "no"}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.containerCss);
+      appendFlatCss(lines, "tab", d.tabCss);
+      appendFlatCss(lines, "active tab", d.activeTabCss);
+      if (d.hoverTabCss) appendFlatCss(lines, "hover tab", d.hoverTabCss);
     }
   }
 
   if (config.componentPreferences.sidebarStyle) {
     lines.push(`## Sidebar Style: ${config.componentPreferences.sidebarStyle}`, "");
-    const details = config.componentPreferences.sidebarStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Collapsible: ${details.isCollapsible ? "yes" : "no"}`);
-      lines.push(`- Group headers: ${details.hasGroupHeaders ? "yes" : "no"}`);
-      lines.push(`- Width: ${details.width}`);
+    const d = config.componentPreferences.sidebarStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Collapsible: ${d.isCollapsible ? "yes" : "no"}`);
+      lines.push(`- Group headers: ${d.hasGroupHeaders ? "yes" : "no"}`);
+      lines.push(`- Width: ${d.width}`);
+      if (d.collapsedWidth) lines.push(`- Collapsed width: ${d.collapsedWidth}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.css);
+      appendFlatCss(lines, "item", d.itemCss);
+      appendFlatCss(lines, "active item", d.activeItemCss);
+      if (d.hoverItemCss) appendFlatCss(lines, "hover item", d.hoverItemCss);
     }
   }
 
   if (config.componentPreferences.heroStyle) {
     lines.push(`## Hero Style: ${config.componentPreferences.heroStyle}`, "");
-    const details = config.componentPreferences.heroStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Layout: ${details.layout}`);
-      lines.push(`- Has image: ${details.hasImage ? "yes" : "no"}`);
-      lines.push(`- Has gradient: ${details.hasGradient ? "yes" : "no"}`);
-      lines.push(`- Min height: ${details.minHeight}`);
+    const d = config.componentPreferences.heroStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Layout: ${d.layout}`);
+      lines.push(`- Has image: ${d.hasImage ? "yes" : "no"}`);
+      lines.push(`- Has gradient: ${d.hasGradient ? "yes" : "no"}`);
+      lines.push(`- Min height: ${d.minHeight}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.css);
+      if (d.contentCss) appendFlatCss(lines, "content", d.contentCss);
     }
   }
 
   if (config.componentPreferences.modalStyle) {
     lines.push(`## Modal Style: ${config.componentPreferences.modalStyle}`, "");
-    const details = config.componentPreferences.modalStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Subtype: ${details.subtype}`);
-      lines.push(`- Has overlay: ${details.hasOverlay ? "yes" : "no"}`);
-      lines.push(`- Animation direction: ${details.animationDirection}`);
+    const d = config.componentPreferences.modalStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Subtype: ${d.subtype}`);
+      lines.push(`- Has overlay: ${d.hasOverlay ? "yes" : "no"}`);
+      lines.push(`- Animation direction: ${d.animationDirection}`);
       lines.push("");
+      appendFlatCss(lines, "overlay", d.css);
+      appendFlatCss(lines, "panel", d.panelCss);
     }
   }
 
   if (config.componentPreferences.footerStyle) {
     lines.push(`## Footer Style: ${config.componentPreferences.footerStyle}`, "");
-    const details = config.componentPreferences.footerStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Columns: ${details.columns}`);
-      lines.push(`- Has CTA: ${details.hasCta ? "yes" : "no"}`);
-      lines.push(`- Has newsletter: ${details.hasNewsletter ? "yes" : "no"}`);
+    const d = config.componentPreferences.footerStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Columns: ${d.columns}`);
+      lines.push(`- Has CTA: ${d.hasCta ? "yes" : "no"}`);
+      lines.push(`- Has newsletter: ${d.hasNewsletter ? "yes" : "no"}`);
       lines.push("");
+      appendFlatCss(lines, "default", d.css);
     }
   }
 
   if (config.componentPreferences.badgeStyle) {
     lines.push(`## Badge Style: ${config.componentPreferences.badgeStyle}`, "");
-    const details = config.componentPreferences.badgeStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Shape: ${details.shape}`);
-      lines.push(`- Has dismiss: ${details.hasDismiss ? "yes" : "no"}`);
-      lines.push(`- Has icon: ${details.hasIcon ? "yes" : "no"}`);
-      lines.push(`- Has dot: ${details.hasDot ? "yes" : "no"}`);
+    const d = config.componentPreferences.badgeStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Shape: ${d.shape}`);
+      lines.push(`- Has dismiss: ${d.hasDismiss ? "yes" : "no"}`);
+      lines.push(`- Has icon: ${d.hasIcon ? "yes" : "no"}`);
+      lines.push(`- Has dot: ${d.hasDot ? "yes" : "no"}`);
       lines.push("");
+      appendFlatCss(lines, "default", d.css);
     }
   }
 
   if (config.componentPreferences.avatarStyle) {
     lines.push(`## Avatar Style: ${config.componentPreferences.avatarStyle}`, "");
-    const details = config.componentPreferences.avatarStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Shape: ${details.shape}`);
-      lines.push(`- Has status: ${details.hasStatus ? "yes" : "no"}`);
-      lines.push(`- Has badge: ${details.hasBadge ? "yes" : "no"}`);
-      lines.push(`- Has ring: ${details.hasRing ? "yes" : "no"}`);
-      lines.push(`- Supports group: ${details.supportsGroup ? "yes" : "no"}`);
+    const d = config.componentPreferences.avatarStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Shape: ${d.shape}`);
+      lines.push(`- Has status: ${d.hasStatus ? "yes" : "no"}`);
+      lines.push(`- Has badge: ${d.hasBadge ? "yes" : "no"}`);
+      lines.push(`- Has ring: ${d.hasRing ? "yes" : "no"}`);
+      lines.push(`- Supports group: ${d.supportsGroup ? "yes" : "no"}`);
       lines.push("");
+      appendFlatCss(lines, "default", d.css);
     }
   }
 
   if (config.componentPreferences.listStyle) {
     lines.push(`## List Style: ${config.componentPreferences.listStyle}`, "");
-    const details = config.componentPreferences.listStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Leading element: ${details.hasLeadingElement ? "yes" : "no"}`);
-      lines.push(`- Trailing element: ${details.hasTrailingElement ? "yes" : "no"}`);
-      lines.push(`- Grouped: ${details.isGrouped ? "yes" : "no"}`);
-      lines.push(`- Expandable: ${details.isExpandable ? "yes" : "no"}`);
+    const d = config.componentPreferences.listStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Leading element: ${d.hasLeadingElement ? "yes" : "no"}`);
+      lines.push(`- Trailing element: ${d.hasTrailingElement ? "yes" : "no"}`);
+      lines.push(`- Grouped: ${d.isGrouped ? "yes" : "no"}`);
+      lines.push(`- Expandable: ${d.isExpandable ? "yes" : "no"}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.css);
+      appendFlatCss(lines, "item", d.itemCss);
+      if (d.activeItemCss) appendFlatCss(lines, "active item", d.activeItemCss);
     }
   }
 
   if (config.componentPreferences.tableStyle) {
     lines.push(`## Table Style: ${config.componentPreferences.tableStyle}`, "");
-    const details = config.componentPreferences.tableStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Sticky header: ${details.hasStickyHeader ? "yes" : "no"}`);
-      lines.push(`- Row selection: ${details.hasRowSelection ? "yes" : "no"}`);
-      lines.push(`- Density: ${details.density}`);
+    const d = config.componentPreferences.tableStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Sticky header: ${d.hasStickyHeader ? "yes" : "no"}`);
+      lines.push(`- Row selection: ${d.hasRowSelection ? "yes" : "no"}`);
+      lines.push(`- Density: ${d.density}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.containerCss);
+      appendFlatCss(lines, "header", d.headerCss);
+      appendFlatCss(lines, "row", d.rowCss);
+      if (d.altRowCss) appendFlatCss(lines, "alt row", d.altRowCss);
+      if (d.hoverRowCss) appendFlatCss(lines, "hover row", d.hoverRowCss);
     }
   }
 
   if (config.componentPreferences.pricingStyle) {
     lines.push(`## Pricing Style: ${config.componentPreferences.pricingStyle}`, "");
-    const details = config.componentPreferences.pricingStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Layout: ${details.layout}`);
-      lines.push(`- Featured: ${details.isFeatured ? "yes" : "no"}`);
-      lines.push(`- Has toggle: ${details.hasToggle ? "yes" : "no"}`);
-      lines.push(`- Has trial badge: ${details.hasTrialBadge ? "yes" : "no"}`);
+    const d = config.componentPreferences.pricingStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Layout: ${d.layout}`);
+      lines.push(`- Featured: ${d.isFeatured ? "yes" : "no"}`);
+      lines.push(`- Has toggle: ${d.hasToggle ? "yes" : "no"}`);
+      lines.push(`- Has trial badge: ${d.hasTrialBadge ? "yes" : "no"}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.css);
+      if (d.headerCss) appendFlatCss(lines, "header", d.headerCss);
+      if (d.priceCss) appendFlatCss(lines, "price", d.priceCss);
     }
   }
 
   if (config.componentPreferences.testimonialStyle) {
     lines.push(`## Testimonial Style: ${config.componentPreferences.testimonialStyle}`, "");
-    const details = config.componentPreferences.testimonialStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Layout: ${details.layout}`);
-      lines.push(`- Has avatar: ${details.hasAvatar ? "yes" : "no"}`);
-      lines.push(`- Has rating: ${details.hasRating ? "yes" : "no"}`);
-      lines.push(`- Has media: ${details.hasMedia ? "yes" : "no"}`);
+    const d = config.componentPreferences.testimonialStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Layout: ${d.layout}`);
+      lines.push(`- Has avatar: ${d.hasAvatar ? "yes" : "no"}`);
+      lines.push(`- Has rating: ${d.hasRating ? "yes" : "no"}`);
+      lines.push(`- Has media: ${d.hasMedia ? "yes" : "no"}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.css);
+      if (d.quoteCss) appendFlatCss(lines, "quote", d.quoteCss);
     }
   }
 
   if (config.componentPreferences.statStyle) {
     lines.push(`## Stat Style: ${config.componentPreferences.statStyle}`, "");
-    const details = config.componentPreferences.statStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Layout: ${details.layout}`);
-      lines.push(`- Has icon: ${details.hasIcon ? "yes" : "no"}`);
-      lines.push(`- Has trend: ${details.hasTrend ? "yes" : "no"}`);
-      lines.push(`- Has chart: ${details.hasChart ? "yes" : "no"}`);
+    const d = config.componentPreferences.statStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Layout: ${d.layout}`);
+      lines.push(`- Has icon: ${d.hasIcon ? "yes" : "no"}`);
+      lines.push(`- Has trend: ${d.hasTrend ? "yes" : "no"}`);
+      lines.push(`- Has chart: ${d.hasChart ? "yes" : "no"}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.css);
+      if (d.valueCss) appendFlatCss(lines, "value", d.valueCss);
     }
   }
 
   if (config.componentPreferences.dividerStyle) {
     lines.push(`## Divider Style: ${config.componentPreferences.dividerStyle}`, "");
-    const details = config.componentPreferences.dividerStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Style: ${details.style}`);
-      lines.push(`- Has label: ${details.hasLabel ? "yes" : "no"}`);
-      lines.push(`- Has icon: ${details.hasIcon ? "yes" : "no"}`);
-      lines.push(`- Thickness: ${details.thickness}`);
+    const d = config.componentPreferences.dividerStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Style: ${d.style}`);
+      lines.push(`- Has label: ${d.hasLabel ? "yes" : "no"}`);
+      lines.push(`- Has icon: ${d.hasIcon ? "yes" : "no"}`);
+      lines.push(`- Thickness: ${d.thickness}`);
       lines.push("");
+      appendFlatCss(lines, "default", d.css);
     }
   }
 
   if (config.componentPreferences.imageStyle) {
     lines.push(`## Image Style: ${config.componentPreferences.imageStyle}`, "");
-    const details = config.componentPreferences.imageStyleDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Shape: ${details.shape}`);
-      lines.push(`- Has overlay: ${details.hasOverlay ? "yes" : "no"}`);
-      lines.push(`- Has caption: ${details.hasCaption ? "yes" : "no"}`);
-      if (details.aspectRatio) lines.push(`- Aspect ratio: ${details.aspectRatio}`);
+    const d = config.componentPreferences.imageStyleDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Shape: ${d.shape}`);
+      lines.push(`- Has overlay: ${d.hasOverlay ? "yes" : "no"}`);
+      lines.push(`- Has caption: ${d.hasCaption ? "yes" : "no"}`);
+      if (d.aspectRatio) lines.push(`- Aspect ratio: ${d.aspectRatio}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.css);
+      if (d.overlayCss) appendFlatCss(lines, "overlay", d.overlayCss);
     }
   }
 
   if (config.componentPreferences.emptyStatePattern) {
     lines.push(`## Empty State Pattern: ${config.componentPreferences.emptyStatePattern}`, "");
-    const details = config.componentPreferences.emptyStatePatternDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Layout: ${details.layout}`);
-      lines.push(`- Has illustration: ${details.hasIllustration ? "yes" : "no"}`);
-      lines.push(`- Has CTA: ${details.hasCta ? "yes" : "no"}`);
-      lines.push(`- Tone: ${details.tone}`);
+    const d = config.componentPreferences.emptyStatePatternDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Layout: ${d.layout}`);
+      lines.push(`- Has illustration: ${d.hasIllustration ? "yes" : "no"}`);
+      lines.push(`- Has CTA: ${d.hasCta ? "yes" : "no"}`);
+      lines.push(`- Tone: ${d.tone}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.containerCss);
+      appendFlatCss(lines, "illustration", d.illustrationCss);
     }
   }
 
   if (config.componentPreferences.loadingPattern) {
     lines.push(`## Loading Pattern: ${config.componentPreferences.loadingPattern}`, "");
-    const details = config.componentPreferences.loadingPatternDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Type: ${details.type}`);
-      lines.push(`- Animation: ${details.animationStyle}`);
-      lines.push(`- Line count: ${details.lineCount}`);
-      lines.push(`- Full page: ${details.isFullPage ? "yes" : "no"}`);
+    const d = config.componentPreferences.loadingPatternDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Type: ${d.type}`);
+      lines.push(`- Animation: ${d.animationStyle}`);
+      lines.push(`- Line count: ${d.lineCount}`);
+      lines.push(`- Full page: ${d.isFullPage ? "yes" : "no"}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.containerCss);
+      appendFlatCss(lines, "element", d.elementCss);
     }
   }
 
   if (config.componentPreferences.onboardingPattern) {
     lines.push(`## Onboarding Pattern: ${config.componentPreferences.onboardingPattern}`, "");
-    const details = config.componentPreferences.onboardingPatternDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Layout: ${details.layout}`);
-      lines.push(`- Step indicator: ${details.hasStepIndicator ? "yes" : "no"}`);
-      lines.push(`- Skip button: ${details.hasSkipButton ? "yes" : "no"}`);
-      lines.push(`- Step count: ${details.stepCount}`);
+    const d = config.componentPreferences.onboardingPatternDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Layout: ${d.layout}`);
+      lines.push(`- Step indicator: ${d.hasStepIndicator ? "yes" : "no"}`);
+      lines.push(`- Skip button: ${d.hasSkipButton ? "yes" : "no"}`);
+      lines.push(`- Step count: ${d.stepCount}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.containerCss);
+      appendFlatCss(lines, "step indicator", d.stepIndicatorCss);
     }
   }
 
   if (config.componentPreferences.errorPattern) {
     lines.push(`## Error Pattern: ${config.componentPreferences.errorPattern}`, "");
-    const details = config.componentPreferences.errorPatternDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Error type: ${details.errorType}`);
-      lines.push(`- Has error code: ${details.hasErrorCode ? "yes" : "no"}`);
-      lines.push(`- Has CTA: ${details.hasCta ? "yes" : "no"}`);
-      lines.push(`- Tone: ${details.tone}`);
+    const d = config.componentPreferences.errorPatternDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Error type: ${d.errorType}`);
+      lines.push(`- Has error code: ${d.hasErrorCode ? "yes" : "no"}`);
+      lines.push(`- Has CTA: ${d.hasCta ? "yes" : "no"}`);
+      lines.push(`- Tone: ${d.tone}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.containerCss);
+      appendFlatCss(lines, "icon", d.iconCss);
     }
   }
 
   if (config.componentPreferences.successPattern) {
     lines.push(`## Success Pattern: ${config.componentPreferences.successPattern}`, "");
-    const details = config.componentPreferences.successPatternDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Type: ${details.type}`);
-      lines.push(`- Has animation: ${details.hasAnimation ? "yes" : "no"}`);
-      lines.push(`- Has redirect: ${details.hasRedirect ? "yes" : "no"}`);
-      lines.push(`- Has CTA: ${details.hasCta ? "yes" : "no"}`);
+    const d = config.componentPreferences.successPatternDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Type: ${d.type}`);
+      lines.push(`- Has animation: ${d.hasAnimation ? "yes" : "no"}`);
+      lines.push(`- Has redirect: ${d.hasRedirect ? "yes" : "no"}`);
+      lines.push(`- Has CTA: ${d.hasCta ? "yes" : "no"}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.containerCss);
+      appendFlatCss(lines, "icon", d.iconCss);
     }
   }
 
   if (config.componentPreferences.notificationPattern) {
     lines.push(`## Notification Pattern: ${config.componentPreferences.notificationPattern}`, "");
-    const details = config.componentPreferences.notificationPatternDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Subtype: ${details.subtype}`);
-      lines.push(`- Position: ${details.position}`);
-      lines.push(`- Has icon: ${details.hasIcon ? "yes" : "no"}`);
-      lines.push(`- Has action: ${details.hasAction ? "yes" : "no"}`);
-      lines.push(`- Auto-dismiss: ${details.isAutoDismiss ? "yes" : "no"}`);
+    const d = config.componentPreferences.notificationPatternDetails;
+    if (d) {
+      lines.push(`- Variant: ${d.variant}`);
+      lines.push(`- Subtype: ${d.subtype}`);
+      lines.push(`- Position: ${d.position}`);
+      lines.push(`- Has icon: ${d.hasIcon ? "yes" : "no"}`);
+      lines.push(`- Has action: ${d.hasAction ? "yes" : "no"}`);
+      lines.push(`- Auto-dismiss: ${d.isAutoDismiss ? "yes" : "no"}`);
       lines.push("");
+      appendFlatCss(lines, "container", d.containerCss);
+      appendFlatCss(lines, "content", d.contentCss);
     }
   }
 
@@ -814,69 +869,28 @@ export function exportClaudeMd(config: DesignConfig): string {
     lines.push("## Motion & Animation", "");
   }
 
-  if (config.componentPreferences.buttonAnimation) {
-    lines.push(`### Button Animation: ${config.componentPreferences.buttonAnimation}`);
-    const details = config.componentPreferences.buttonAnimationDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Subtype: ${details.subtype}`);
-      lines.push(`- Duration: ${details.duration}`);
-      lines.push(`- Easing: ${details.easing}`);
-      lines.push(`- Trigger: ${details.trigger}`);
-      lines.push("");
-    }
-  }
+  const animSections: { name: string; label: string; details?: { variant: string; subtype: string; duration: string; easing: string; trigger: string; cssKeyframes?: string; cssProperties?: Record<string, string> } }[] = [
+    { name: config.componentPreferences.buttonAnimation ?? "", label: "Button Animation", details: config.componentPreferences.buttonAnimationDetails },
+    { name: config.componentPreferences.hoverAnimation ?? "", label: "Hover Animation", details: config.componentPreferences.hoverAnimationDetails },
+    { name: config.componentPreferences.pageTransition ?? "", label: "Page Transition", details: config.componentPreferences.pageTransitionDetails },
+    { name: config.componentPreferences.microInteraction ?? "", label: "Micro-interaction", details: config.componentPreferences.microInteractionDetails },
+    { name: config.componentPreferences.entranceAnimation ?? "", label: "Entrance Animation", details: config.componentPreferences.entranceAnimationDetails },
+  ];
 
-  if (config.componentPreferences.hoverAnimation) {
-    lines.push(`### Hover Animation: ${config.componentPreferences.hoverAnimation}`);
-    const details = config.componentPreferences.hoverAnimationDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Subtype: ${details.subtype}`);
-      lines.push(`- Duration: ${details.duration}`);
-      lines.push(`- Easing: ${details.easing}`);
-      lines.push(`- Trigger: ${details.trigger}`);
+  for (const { name, label, details } of animSections) {
+    if (!name || !details) continue;
+    lines.push(`### ${label}: ${name}`);
+    lines.push(`- Duration: ${details.duration}`);
+    lines.push(`- Easing: ${details.easing}`);
+    lines.push(`- Trigger: ${details.trigger}`);
+    if (details.cssProperties) {
       lines.push("");
+      appendFlatCss(lines, "properties", details.cssProperties);
     }
-  }
-
-  if (config.componentPreferences.pageTransition) {
-    lines.push(`### Page Transition: ${config.componentPreferences.pageTransition}`);
-    const details = config.componentPreferences.pageTransitionDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Subtype: ${details.subtype}`);
-      lines.push(`- Duration: ${details.duration}`);
-      lines.push(`- Easing: ${details.easing}`);
-      lines.push(`- Trigger: ${details.trigger}`);
-      lines.push("");
+    if (details.cssKeyframes) {
+      lines.push("```css", details.cssKeyframes, "```");
     }
-  }
-
-  if (config.componentPreferences.microInteraction) {
-    lines.push(`### Micro-interaction: ${config.componentPreferences.microInteraction}`);
-    const details = config.componentPreferences.microInteractionDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Subtype: ${details.subtype}`);
-      lines.push(`- Duration: ${details.duration}`);
-      lines.push(`- Easing: ${details.easing}`);
-      lines.push(`- Trigger: ${details.trigger}`);
-      lines.push("");
-    }
-  }
-
-  if (config.componentPreferences.entranceAnimation) {
-    lines.push(`### Entrance Animation: ${config.componentPreferences.entranceAnimation}`);
-    const details = config.componentPreferences.entranceAnimationDetails;
-    if (details) {
-      lines.push(`- Variant: ${details.variant}`);
-      lines.push(`- Subtype: ${details.subtype}`);
-      lines.push(`- Duration: ${details.duration}`);
-      lines.push(`- Easing: ${details.easing}`);
-      lines.push(`- Trigger: ${details.trigger}`);
-      lines.push("");
-    }
+    lines.push("");
   }
 
   return lines.join("\n");
@@ -1102,6 +1116,243 @@ function tokens(config: DesignConfig) {
 
 function camelToKebab(str: string): string {
   return str.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+}
+
+/** Emit a CSS rule block: .selector { props } */
+function cssRule(lines: string[], selector: string, css: Record<string, string>) {
+  if (Object.keys(css).length === 0) return;
+  lines.push(`${selector} {`);
+  for (const [k, v] of Object.entries(css)) {
+    lines.push(`  ${camelToKebab(k)}: ${v};`);
+  }
+  lines.push("}");
+}
+
+/** Generate component CSS classes from componentPreferences */
+function appendComponentCssClasses(lines: string[], config: DesignConfig) {
+  const cp = config.componentPreferences;
+  const hasAny = cp.buttonStyleDetails || cp.inputStyleDetails || cp.cardStyleDetails ||
+    cp.navigationStyleDetails || cp.tabStyleDetails || cp.sidebarStyleDetails ||
+    cp.modalStyleDetails || cp.heroStyleDetails || cp.footerStyleDetails ||
+    cp.badgeStyleDetails || cp.avatarStyleDetails || cp.listStyleDetails ||
+    cp.tableStyleDetails || cp.pricingStyleDetails || cp.testimonialStyleDetails ||
+    cp.statStyleDetails || cp.dividerStyleDetails || cp.imageStyleDetails ||
+    cp.emptyStatePatternDetails || cp.loadingPatternDetails || cp.onboardingPatternDetails ||
+    cp.errorPatternDetails || cp.successPatternDetails || cp.notificationPatternDetails;
+
+  if (!hasAny) return;
+  lines.push("", "/* Component Styles */", "");
+
+  // Buttons — stateful CSS (default, hover, active, disabled)
+  if (cp.buttonStyleDetails) {
+    const css = cp.buttonStyleDetails.css;
+    cssRule(lines, `.dk-btn`, css.default);
+    cssRule(lines, `.dk-btn:hover`, css.hover);
+    cssRule(lines, `.dk-btn:active`, css.active);
+    cssRule(lines, `.dk-btn:disabled`, css.disabled);
+    lines.push("");
+  }
+
+  // Inputs — stateful CSS
+  if (cp.inputStyleDetails) {
+    const css = cp.inputStyleDetails.css;
+    cssRule(lines, `.dk-input`, css.default);
+    cssRule(lines, `.dk-input:focus`, css.focus);
+    cssRule(lines, `.dk-input.filled`, css.filled);
+    cssRule(lines, `.dk-input.error`, css.error);
+    cssRule(lines, `.dk-input:disabled`, css.disabled);
+    lines.push("");
+  }
+
+  // Cards — flat CSS + hover
+  if (cp.cardStyleDetails) {
+    cssRule(lines, `.dk-card`, cp.cardStyleDetails.css);
+    if (cp.cardStyleDetails.hoverCss) cssRule(lines, `.dk-card:hover`, cp.cardStyleDetails.hoverCss);
+    lines.push("");
+  }
+
+  // Navigation
+  if (cp.navigationStyleDetails) {
+    cssRule(lines, `.dk-nav`, cp.navigationStyleDetails.css);
+    if (cp.navigationStyleDetails.hoverCss) cssRule(lines, `.dk-nav a:hover`, cp.navigationStyleDetails.hoverCss);
+    lines.push("");
+  }
+
+  // Tabs
+  if (cp.tabStyleDetails) {
+    const d = cp.tabStyleDetails;
+    cssRule(lines, `.dk-tabs`, d.containerCss);
+    cssRule(lines, `.dk-tab`, d.tabCss);
+    cssRule(lines, `.dk-tab.active`, d.activeTabCss);
+    if (d.hoverTabCss) cssRule(lines, `.dk-tab:hover`, d.hoverTabCss);
+    lines.push("");
+  }
+
+  // Sidebar
+  if (cp.sidebarStyleDetails) {
+    const d = cp.sidebarStyleDetails;
+    cssRule(lines, `.dk-sidebar`, d.css);
+    cssRule(lines, `.dk-sidebar-item`, d.itemCss);
+    cssRule(lines, `.dk-sidebar-item.active`, d.activeItemCss);
+    if (d.hoverItemCss) cssRule(lines, `.dk-sidebar-item:hover`, d.hoverItemCss);
+    lines.push("");
+  }
+
+  // Modal
+  if (cp.modalStyleDetails) {
+    cssRule(lines, `.dk-modal-overlay`, cp.modalStyleDetails.css);
+    cssRule(lines, `.dk-modal-panel`, cp.modalStyleDetails.panelCss);
+    lines.push("");
+  }
+
+  // Hero
+  if (cp.heroStyleDetails) {
+    cssRule(lines, `.dk-hero`, cp.heroStyleDetails.css);
+    if (cp.heroStyleDetails.contentCss) cssRule(lines, `.dk-hero-content`, cp.heroStyleDetails.contentCss);
+    lines.push("");
+  }
+
+  // Footer
+  if (cp.footerStyleDetails) {
+    cssRule(lines, `.dk-footer`, cp.footerStyleDetails.css);
+    lines.push("");
+  }
+
+  // Badge
+  if (cp.badgeStyleDetails) {
+    cssRule(lines, `.dk-badge`, cp.badgeStyleDetails.css);
+    lines.push("");
+  }
+
+  // Avatar
+  if (cp.avatarStyleDetails) {
+    cssRule(lines, `.dk-avatar`, cp.avatarStyleDetails.css);
+    lines.push("");
+  }
+
+  // List
+  if (cp.listStyleDetails) {
+    const d = cp.listStyleDetails;
+    cssRule(lines, `.dk-list`, d.css);
+    cssRule(lines, `.dk-list-item`, d.itemCss);
+    if (d.activeItemCss) cssRule(lines, `.dk-list-item.active`, d.activeItemCss);
+    lines.push("");
+  }
+
+  // Table
+  if (cp.tableStyleDetails) {
+    const d = cp.tableStyleDetails;
+    cssRule(lines, `.dk-table`, d.containerCss);
+    cssRule(lines, `.dk-table th`, d.headerCss);
+    cssRule(lines, `.dk-table td`, d.rowCss);
+    if (d.altRowCss) cssRule(lines, `.dk-table tr:nth-child(even) td`, d.altRowCss);
+    if (d.hoverRowCss) cssRule(lines, `.dk-table tr:hover td`, d.hoverRowCss);
+    lines.push("");
+  }
+
+  // Pricing
+  if (cp.pricingStyleDetails) {
+    const d = cp.pricingStyleDetails;
+    cssRule(lines, `.dk-pricing`, d.css);
+    if (d.headerCss) cssRule(lines, `.dk-pricing-header`, d.headerCss);
+    if (d.priceCss) cssRule(lines, `.dk-pricing-price`, d.priceCss);
+    lines.push("");
+  }
+
+  // Testimonial
+  if (cp.testimonialStyleDetails) {
+    cssRule(lines, `.dk-testimonial`, cp.testimonialStyleDetails.css);
+    if (cp.testimonialStyleDetails.quoteCss) cssRule(lines, `.dk-testimonial-quote`, cp.testimonialStyleDetails.quoteCss);
+    lines.push("");
+  }
+
+  // Stat
+  if (cp.statStyleDetails) {
+    cssRule(lines, `.dk-stat`, cp.statStyleDetails.css);
+    if (cp.statStyleDetails.valueCss) cssRule(lines, `.dk-stat-value`, cp.statStyleDetails.valueCss);
+    lines.push("");
+  }
+
+  // Divider
+  if (cp.dividerStyleDetails) {
+    cssRule(lines, `.dk-divider`, cp.dividerStyleDetails.css);
+    lines.push("");
+  }
+
+  // Image
+  if (cp.imageStyleDetails) {
+    cssRule(lines, `.dk-image`, cp.imageStyleDetails.css);
+    if (cp.imageStyleDetails.overlayCss) cssRule(lines, `.dk-image-overlay`, cp.imageStyleDetails.overlayCss);
+    lines.push("");
+  }
+
+  // Empty state
+  if (cp.emptyStatePatternDetails) {
+    cssRule(lines, `.dk-empty-state`, cp.emptyStatePatternDetails.containerCss);
+    cssRule(lines, `.dk-empty-state-illustration`, cp.emptyStatePatternDetails.illustrationCss);
+    lines.push("");
+  }
+
+  // Loading
+  if (cp.loadingPatternDetails) {
+    cssRule(lines, `.dk-loading`, cp.loadingPatternDetails.containerCss);
+    cssRule(lines, `.dk-loading-element`, cp.loadingPatternDetails.elementCss);
+    lines.push("");
+  }
+
+  // Onboarding
+  if (cp.onboardingPatternDetails) {
+    cssRule(lines, `.dk-onboarding`, cp.onboardingPatternDetails.containerCss);
+    cssRule(lines, `.dk-onboarding-steps`, cp.onboardingPatternDetails.stepIndicatorCss);
+    lines.push("");
+  }
+
+  // Error
+  if (cp.errorPatternDetails) {
+    cssRule(lines, `.dk-error`, cp.errorPatternDetails.containerCss);
+    cssRule(lines, `.dk-error-icon`, cp.errorPatternDetails.iconCss);
+    lines.push("");
+  }
+
+  // Success
+  if (cp.successPatternDetails) {
+    cssRule(lines, `.dk-success`, cp.successPatternDetails.containerCss);
+    cssRule(lines, `.dk-success-icon`, cp.successPatternDetails.iconCss);
+    lines.push("");
+  }
+
+  // Notification
+  if (cp.notificationPatternDetails) {
+    cssRule(lines, `.dk-notification`, cp.notificationPatternDetails.containerCss);
+    cssRule(lines, `.dk-notification-content`, cp.notificationPatternDetails.contentCss);
+    lines.push("");
+  }
+}
+
+/** Format a flat Record<string, string> as a CSS code block for claude-md */
+function appendFlatCss(lines: string[], label: string, css: Record<string, string>) {
+  if (Object.keys(css).length === 0) return;
+  lines.push("```css", `/* ${label} */`);
+  for (const [k, v] of Object.entries(css)) {
+    lines.push(`${camelToKebab(k)}: ${v};`);
+  }
+  lines.push("```", "");
+}
+
+/** Format a stateful CSS object (e.g. { default, hover, active, disabled }) as a CSS code block */
+function appendStatefulCss(lines: string[], css: Record<string, Record<string, string>>) {
+  if (Object.keys(css).length === 0) return;
+  lines.push("```css");
+  const states = Object.entries(css);
+  for (let i = 0; i < states.length; i++) {
+    const [state, props] = states[i];
+    lines.push(`/* ${state} */`);
+    for (const [k, v] of Object.entries(props)) {
+      lines.push(`${camelToKebab(k)}: ${v};`);
+    }
+    if (i < states.length - 1) lines.push("");
+  }
+  lines.push("```", "");
 }
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } {

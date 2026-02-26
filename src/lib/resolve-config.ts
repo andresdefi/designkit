@@ -271,298 +271,63 @@ export function buildConfig(state: DesignKitState): DesignConfig {
     },
     componentPreferences: {
       buttonStyle: selectedButton?.name,
-      buttonStyleDetails: selectedButton
-        ? {
-            colorStrategy: selectedButton.data.colorStrategy,
-            animation: selectedButton.data.animation,
-            supportsSizes: selectedButton.data.supportsSizes,
-            supportsIcons: selectedButton.data.supportsIcons,
-          }
-        : undefined,
+      buttonStyleDetails: selectedButton?.data,
       inputStyle: selectedInput?.name,
-      inputStyleDetails: selectedInput
-        ? {
-            variant: selectedInput.data.variant,
-            subtype: selectedInput.data.subtype,
-            hasFloatingLabel: selectedInput.data.hasFloatingLabel,
-          }
-        : undefined,
+      inputStyleDetails: selectedInput?.data,
       cardStyle: selectedCard?.name,
-      cardStyleDetails: selectedCard
-        ? {
-            variant: selectedCard.data.variant,
-            hasImage: selectedCard.data.hasImage,
-            layout: selectedCard.data.layout,
-          }
-        : undefined,
+      cardStyleDetails: selectedCard?.data,
       navigationStyle: selectedNavigation?.name,
-      navigationStyleDetails: selectedNavigation
-        ? {
-            variant: selectedNavigation.data.variant,
-            subtype: selectedNavigation.data.subtype,
-            layout: selectedNavigation.data.layout,
-            hasLogo: selectedNavigation.data.hasLogo,
-            hasAvatar: selectedNavigation.data.hasAvatar,
-            position: selectedNavigation.data.position,
-          }
-        : undefined,
+      navigationStyleDetails: selectedNavigation?.data,
       tabStyle: selectedTab?.name,
-      tabStyleDetails: selectedTab
-        ? {
-            variant: selectedTab.data.variant,
-            orientation: selectedTab.data.orientation,
-            indicatorStyle: selectedTab.data.indicatorStyle,
-            hasIcons: selectedTab.data.hasIcons,
-          }
-        : undefined,
+      tabStyleDetails: selectedTab?.data,
       sidebarStyle: selectedSidebar?.name,
-      sidebarStyleDetails: selectedSidebar
-        ? {
-            variant: selectedSidebar.data.variant,
-            isCollapsible: selectedSidebar.data.isCollapsible,
-            hasGroupHeaders: selectedSidebar.data.hasGroupHeaders,
-            width: selectedSidebar.data.width,
-          }
-        : undefined,
+      sidebarStyleDetails: selectedSidebar?.data,
       modalStyle: selectedModal?.name,
-      modalStyleDetails: selectedModal
-        ? {
-            variant: selectedModal.data.variant,
-            subtype: selectedModal.data.subtype,
-            hasOverlay: selectedModal.data.hasOverlay,
-            animationDirection: selectedModal.data.animationDirection,
-          }
-        : undefined,
+      modalStyleDetails: selectedModal?.data,
       heroStyle: selectedHero?.name,
-      heroStyleDetails: selectedHero
-        ? {
-            variant: selectedHero.data.variant,
-            layout: selectedHero.data.layout,
-            hasImage: selectedHero.data.hasImage,
-            hasGradient: selectedHero.data.hasGradient,
-            minHeight: selectedHero.data.minHeight,
-          }
-        : undefined,
+      heroStyleDetails: selectedHero?.data,
       footerStyle: selectedFooter?.name,
-      footerStyleDetails: selectedFooter
-        ? {
-            variant: selectedFooter.data.variant,
-            columns: selectedFooter.data.columns,
-            hasCta: selectedFooter.data.hasCta,
-            hasNewsletter: selectedFooter.data.hasNewsletter,
-          }
-        : undefined,
+      footerStyleDetails: selectedFooter?.data,
       badgeStyle: selectedBadge?.name,
-      badgeStyleDetails: selectedBadge
-        ? {
-            variant: selectedBadge.data.variant,
-            shape: selectedBadge.data.shape,
-            hasDismiss: selectedBadge.data.hasDismiss,
-            hasIcon: selectedBadge.data.hasIcon,
-            hasDot: selectedBadge.data.hasDot,
-          }
-        : undefined,
+      badgeStyleDetails: selectedBadge?.data,
       avatarStyle: selectedAvatar?.name,
-      avatarStyleDetails: selectedAvatar
-        ? {
-            variant: selectedAvatar.data.variant,
-            shape: selectedAvatar.data.shape,
-            hasStatus: selectedAvatar.data.hasStatus,
-            hasBadge: selectedAvatar.data.hasBadge,
-            hasRing: selectedAvatar.data.hasRing,
-            supportsGroup: selectedAvatar.data.supportsGroup,
-          }
-        : undefined,
+      avatarStyleDetails: selectedAvatar?.data,
       listStyle: selectedList?.name,
-      listStyleDetails: selectedList
-        ? {
-            variant: selectedList.data.variant,
-            hasLeadingElement: selectedList.data.hasLeadingElement,
-            hasTrailingElement: selectedList.data.hasTrailingElement,
-            isGrouped: selectedList.data.isGrouped,
-            isExpandable: selectedList.data.isExpandable,
-          }
-        : undefined,
+      listStyleDetails: selectedList?.data,
       tableStyle: selectedTable?.name,
-      tableStyleDetails: selectedTable
-        ? {
-            variant: selectedTable.data.variant,
-            hasStickyHeader: selectedTable.data.hasStickyHeader,
-            hasRowSelection: selectedTable.data.hasRowSelection,
-            density: selectedTable.data.density,
-          }
-        : undefined,
+      tableStyleDetails: selectedTable?.data,
       pricingStyle: selectedPricing?.name,
-      pricingStyleDetails: selectedPricing
-        ? {
-            variant: selectedPricing.data.variant,
-            layout: selectedPricing.data.layout,
-            isFeatured: selectedPricing.data.isFeatured,
-            hasToggle: selectedPricing.data.hasToggle,
-            hasTrialBadge: selectedPricing.data.hasTrialBadge,
-          }
-        : undefined,
+      pricingStyleDetails: selectedPricing?.data,
       testimonialStyle: selectedTestimonial?.name,
-      testimonialStyleDetails: selectedTestimonial
-        ? {
-            variant: selectedTestimonial.data.variant,
-            layout: selectedTestimonial.data.layout,
-            hasAvatar: selectedTestimonial.data.hasAvatar,
-            hasRating: selectedTestimonial.data.hasRating,
-            hasMedia: selectedTestimonial.data.hasMedia,
-          }
-        : undefined,
+      testimonialStyleDetails: selectedTestimonial?.data,
       statStyle: selectedStat?.name,
-      statStyleDetails: selectedStat
-        ? {
-            variant: selectedStat.data.variant,
-            layout: selectedStat.data.layout,
-            hasIcon: selectedStat.data.hasIcon,
-            hasTrend: selectedStat.data.hasTrend,
-            hasChart: selectedStat.data.hasChart,
-          }
-        : undefined,
+      statStyleDetails: selectedStat?.data,
       dividerStyle: selectedDivider?.name,
-      dividerStyleDetails: selectedDivider
-        ? {
-            variant: selectedDivider.data.variant,
-            style: selectedDivider.data.style,
-            hasLabel: selectedDivider.data.hasLabel,
-            hasIcon: selectedDivider.data.hasIcon,
-            thickness: selectedDivider.data.thickness,
-          }
-        : undefined,
+      dividerStyleDetails: selectedDivider?.data,
       imageStyle: selectedImage?.name,
-      imageStyleDetails: selectedImage
-        ? {
-            variant: selectedImage.data.variant,
-            shape: selectedImage.data.shape,
-            hasOverlay: selectedImage.data.hasOverlay,
-            hasCaption: selectedImage.data.hasCaption,
-            aspectRatio: selectedImage.data.aspectRatio,
-          }
-        : undefined,
+      imageStyleDetails: selectedImage?.data,
       emptyStatePattern: selectedEmptyState?.name,
-      emptyStatePatternDetails: selectedEmptyState
-        ? {
-            variant: selectedEmptyState.data.variant,
-            layout: selectedEmptyState.data.layout,
-            hasIllustration: selectedEmptyState.data.hasIllustration,
-            hasCta: selectedEmptyState.data.hasCta,
-            tone: selectedEmptyState.data.tone,
-          }
-        : undefined,
+      emptyStatePatternDetails: selectedEmptyState?.data,
       loadingPattern: selectedLoading?.name,
-      loadingPatternDetails: selectedLoading
-        ? {
-            variant: selectedLoading.data.variant,
-            type: selectedLoading.data.type,
-            animationStyle: selectedLoading.data.animationStyle,
-            lineCount: selectedLoading.data.lineCount,
-            isFullPage: selectedLoading.data.isFullPage,
-          }
-        : undefined,
+      loadingPatternDetails: selectedLoading?.data,
       onboardingPattern: selectedOnboarding?.name,
-      onboardingPatternDetails: selectedOnboarding
-        ? {
-            variant: selectedOnboarding.data.variant,
-            layout: selectedOnboarding.data.layout,
-            hasStepIndicator: selectedOnboarding.data.hasStepIndicator,
-            hasSkipButton: selectedOnboarding.data.hasSkipButton,
-            stepCount: selectedOnboarding.data.stepCount,
-          }
-        : undefined,
+      onboardingPatternDetails: selectedOnboarding?.data,
       errorPattern: selectedError?.name,
-      errorPatternDetails: selectedError
-        ? {
-            variant: selectedError.data.variant,
-            errorType: selectedError.data.errorType,
-            hasErrorCode: selectedError.data.hasErrorCode,
-            hasCta: selectedError.data.hasCta,
-            tone: selectedError.data.tone,
-          }
-        : undefined,
+      errorPatternDetails: selectedError?.data,
       successPattern: selectedSuccess?.name,
-      successPatternDetails: selectedSuccess
-        ? {
-            variant: selectedSuccess.data.variant,
-            type: selectedSuccess.data.type,
-            hasAnimation: selectedSuccess.data.hasAnimation,
-            hasRedirect: selectedSuccess.data.hasRedirect,
-            hasCta: selectedSuccess.data.hasCta,
-          }
-        : undefined,
+      successPatternDetails: selectedSuccess?.data,
       notificationPattern: selectedNotification?.name,
-      notificationPatternDetails: selectedNotification
-        ? {
-            variant: selectedNotification.data.variant,
-            subtype: selectedNotification.data.subtype,
-            position: selectedNotification.data.position,
-            hasIcon: selectedNotification.data.hasIcon,
-            hasAction: selectedNotification.data.hasAction,
-            isAutoDismiss: selectedNotification.data.isAutoDismiss,
-          }
-        : undefined,
+      notificationPatternDetails: selectedNotification?.data,
       buttonAnimation: selectedButtonAnimation?.name,
-      buttonAnimationDetails: selectedButtonAnimation
-        ? {
-            variant: selectedButtonAnimation.data.variant,
-            subtype: selectedButtonAnimation.data.subtype,
-            duration: selectedButtonAnimation.data.duration,
-            easing: selectedButtonAnimation.data.easing,
-            trigger: selectedButtonAnimation.data.trigger,
-            cssKeyframes: selectedButtonAnimation.data.cssKeyframes,
-            cssProperties: selectedButtonAnimation.data.cssProperties,
-          }
-        : undefined,
+      buttonAnimationDetails: selectedButtonAnimation?.data,
       hoverAnimation: selectedHoverAnimation?.name,
-      hoverAnimationDetails: selectedHoverAnimation
-        ? {
-            variant: selectedHoverAnimation.data.variant,
-            subtype: selectedHoverAnimation.data.subtype,
-            duration: selectedHoverAnimation.data.duration,
-            easing: selectedHoverAnimation.data.easing,
-            trigger: selectedHoverAnimation.data.trigger,
-            cssKeyframes: selectedHoverAnimation.data.cssKeyframes,
-            cssProperties: selectedHoverAnimation.data.cssProperties,
-          }
-        : undefined,
+      hoverAnimationDetails: selectedHoverAnimation?.data,
       pageTransition: selectedPageTransition?.name,
-      pageTransitionDetails: selectedPageTransition
-        ? {
-            variant: selectedPageTransition.data.variant,
-            subtype: selectedPageTransition.data.subtype,
-            duration: selectedPageTransition.data.duration,
-            easing: selectedPageTransition.data.easing,
-            trigger: selectedPageTransition.data.trigger,
-            cssKeyframes: selectedPageTransition.data.cssKeyframes,
-            cssProperties: selectedPageTransition.data.cssProperties,
-          }
-        : undefined,
+      pageTransitionDetails: selectedPageTransition?.data,
       microInteraction: selectedMicroInteraction?.name,
-      microInteractionDetails: selectedMicroInteraction
-        ? {
-            variant: selectedMicroInteraction.data.variant,
-            subtype: selectedMicroInteraction.data.subtype,
-            duration: selectedMicroInteraction.data.duration,
-            easing: selectedMicroInteraction.data.easing,
-            trigger: selectedMicroInteraction.data.trigger,
-            cssKeyframes: selectedMicroInteraction.data.cssKeyframes,
-            cssProperties: selectedMicroInteraction.data.cssProperties,
-          }
-        : undefined,
+      microInteractionDetails: selectedMicroInteraction?.data,
       entranceAnimation: selectedEntranceAnimation?.name,
-      entranceAnimationDetails: selectedEntranceAnimation
-        ? {
-            variant: selectedEntranceAnimation.data.variant,
-            subtype: selectedEntranceAnimation.data.subtype,
-            duration: selectedEntranceAnimation.data.duration,
-            easing: selectedEntranceAnimation.data.easing,
-            trigger: selectedEntranceAnimation.data.trigger,
-            cssKeyframes: selectedEntranceAnimation.data.cssKeyframes,
-            cssProperties: selectedEntranceAnimation.data.cssProperties,
-          }
-        : undefined,
+      entranceAnimationDetails: selectedEntranceAnimation?.data,
     },
   };
 }

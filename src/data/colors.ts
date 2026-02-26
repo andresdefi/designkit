@@ -213,7 +213,7 @@ export const colorPalettes: ColorPaletteItem[] = [
     },
   },
 
-  // ── Warm (6) ────────────────────────────────────────────
+  // ── Warm (7) ────────────────────────────────────────────
 
   {
     id: "ember",
@@ -464,6 +464,48 @@ export const colorPalettes: ColorPaletteItem[] = [
         semantic: { success: "#6EC04A", warning: "#D4A624", error: "#E05E50", info: "#5DADE2" },
       },
       primaryScale: { 50: "#FAF3ED", 100: "#F0E1D1", 200: "#DFC4A8", 300: "#CCA57D", 400: "#B98A5E", 500: "#8B5A3C", 600: "#764C32", 700: "#5E3E2D", 800: "#4A3122", 900: "#3A261B", 950: "#1D1410" },
+    },
+  },
+
+  {
+    id: "ocean-sunset",
+    category: "colors",
+    name: "Ocean Sunset",
+    description: "Deep ocean blues melting into warm coral, gold, and twilight purple",
+    data: {
+      light: {
+        background: "#FFF8F5",
+        surface: "#FFFFFF",
+        surfaceAlt: "#FFF0EB",
+        border: "#F0C9B8",
+        text: "#1A1230",
+        textSecondary: "#4A2D5C",
+        textMuted: "#B88A7A",
+        primary: "#1E5F8C",
+        primaryForeground: "#FFFFFF",
+        secondary: "#FBE8DF",
+        secondaryForeground: "#7C3A2A",
+        accent: "#E07850",
+        accentForeground: "#FFFFFF",
+        semantic: { success: "#2D9B6A", warning: "#D4952E", error: "#C93B3B", info: "#2478B8" },
+      },
+      dark: {
+        background: "#0A0E1A",
+        surface: "#111828",
+        surfaceAlt: "#1A2438",
+        border: "#2E3D5A",
+        text: "#F5EDE8",
+        textSecondary: "#D4B8A8",
+        textMuted: "#6A7894",
+        primary: "#5BA8D4",
+        primaryForeground: "#0A0E1A",
+        secondary: "#1E2A42",
+        secondaryForeground: "#E8C8B8",
+        accent: "#F09070",
+        accentForeground: "#0A0E1A",
+        semantic: { success: "#48D89A", warning: "#F0C060", error: "#F07068", info: "#60A8E0" },
+      },
+      primaryScale: { 50: "#F0F7FC", 100: "#DCEDF8", 200: "#B8D9F0", 300: "#8AC0E4", 400: "#5BA8D4", 500: "#3088BC", 600: "#1E5F8C", 700: "#184D72", 800: "#143D5C", 900: "#112E48", 950: "#0A1A2E" },
     },
   },
 

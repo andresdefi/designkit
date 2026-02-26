@@ -3,8 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { SelectionPanel } from "@/components/layout/SelectionPanel";
-import { PreviewPanel } from "@/components/preview/PreviewPanel";
+import { LazyPreviewPanel } from "@/components/preview/LazyPreviewPanel";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
+import { GeneratePanel } from "@/components/ai/GeneratePanel";
+import { CommandPalette } from "@/components/layout/CommandPalette";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +30,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var d=JSON.parse(localStorage.getItem("designkit-selections")||"{}");var t=d.state&&d.state.appTheme;if(t==="light"){document.documentElement.classList.remove("dark");document.documentElement.classList.add("light")}}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -35,9 +44,11 @@ export default function RootLayout({
           <div className="flex h-dvh overflow-hidden">
             <Sidebar />
             <main className="flex-1 overflow-y-auto">{children}</main>
-            <PreviewPanel />
+            <LazyPreviewPanel />
             <SelectionPanel />
           </div>
+          <GeneratePanel />
+          <CommandPalette />
         </ThemeProvider>
       </body>
     </html>

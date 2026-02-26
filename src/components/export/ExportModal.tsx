@@ -127,7 +127,7 @@ function formatTokenValue(path: string, value: string, format: TokenFormat): str
 }
 
 export function ExportModal({ onClose }: { onClose: () => void }) {
-  const { selections, colorPicks, typeScale, select, pickColor, resetAll } = useDesignKit();
+  const { selections, colorPicks, typeScale, select, pickColor, resetAll, setTypeScale } = useDesignKit();
   const [selectedFormats, setSelectedFormats] = useState<Set<FormatId>>(new Set(["json"]));
   const [copied, setCopied] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"preview" | "tokens">("preview");
@@ -238,6 +238,9 @@ export function ExportModal({ onClose }: { onClose: () => void }) {
             }
           }
         }
+        if (typeof data.typeScale === "string") {
+          setTypeScale(data.typeScale);
+        }
         setImporting(false);
         onClose();
       } catch {
@@ -276,11 +279,11 @@ export function ExportModal({ onClose }: { onClose: () => void }) {
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative bg-app-bg border border-app-border rounded-2xl shadow-2xl w-[780px] max-h-[85vh] flex flex-col overflow-hidden">
+      <div role="dialog" aria-modal="true" aria-labelledby="export-modal-title" className="relative bg-app-bg border border-app-border rounded-2xl shadow-2xl w-[780px] max-h-[85vh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-app-border shrink-0">
           <div>
-            <h2 className="text-sm font-semibold text-app-text">Export Design Config</h2>
+            <h2 id="export-modal-title" className="text-sm font-semibold text-app-text">Export Design Config</h2>
             <p className="text-xs text-app-text-muted mt-0.5">
               Choose formats and download your design tokens
             </p>
