@@ -954,41 +954,47 @@ Final pass to make the tool itself feel solid.
 
 ---
 
-## Phase 18: In-App AI Generation
+## Phase 18: Live Preview Canvas
 
-Activate the AI Generate panel — turn the "Coming Soon" stub into a working feature that generates new catalog items via Claude API.
+Turn DesignKit into a live canvas where Claude Code generates full pages and apps using your design identity, and you see the result rendered in the browser instantly.
 
-- [ ] Backend — API route (`POST /api/generate`):
-  - [ ] Integrate Claude API (Anthropic SDK) for item generation
-  - [ ] Build category-aware system prompts with data schema + existing items as context
-  - [ ] Load the user's current selections for style context
-  - [ ] Validate generated items against the TypeScript schema before returning
-  - [ ] Stream responses for real-time feedback in the UI
-  - [ ] Rate limiting / error handling for API failures
-- [ ] Frontend — GeneratePanel activation:
-  - [ ] Remove "Coming Soon" overlay and enable all controls
-  - [ ] Wire category selector, quick prompts, and custom prompt to the API
-  - [ ] Show streaming generation progress (typing indicator / partial preview)
-  - [ ] Display generated item as a preview card before saving
-  - [ ] "Add to catalog" action — persist generated item to the data layer
-  - [ ] "Regenerate" action — try again with the same prompt
-  - [ ] Error states (API key missing, rate limit, generation failed)
-- [ ] Prompt engineering:
-  - [ ] Category-specific system prompts (one per data type) with schema examples
-  - [ ] Include user's current selections as style context ("match this vibe")
-  - [ ] Template variable interpolation for quick prompts
-  - [ ] Free-form custom prompt with guardrails
-- [ ] Data persistence:
-  - [ ] Save generated items to a user-local catalog extension (separate from built-in data)
-  - [ ] Generated items appear in the catalog grid alongside built-in items
-  - [ ] Mark generated items with a visual indicator (badge/icon)
-  - [ ] Delete generated items (built-in items remain protected)
-- [ ] Configuration:
-  - [ ] API key management (env variable or in-app settings)
-  - [ ] Model selection (default to Claude Sonnet for speed, option for Opus for quality)
-  - [ ] Generation settings (temperature, max items per generation)
+**The flow:** You tell Claude Code "create an expense tracker using my DesignKit config" → Claude Code reads your design tokens via MCP → generates a full page component → writes it to the canvas route → you see it live at `/canvas/expense-tracker`.
 
-**Checkpoint:** Users can type a prompt like "a brutalist button with thick borders" and get a working catalog item generated, previewed, and added to their catalog. The generate panel works for all 34 categories.
+- [ ] Canvas route system:
+  - [ ] Dynamic catch-all route (`/canvas/[...slug]/page.tsx`) that renders user-generated pages
+  - [ ] File-based discovery — scans `src/canvas/` for generated components, renders them
+  - [ ] Canvas index page (`/canvas`) listing all generated previews with thumbnails
+  - [ ] Hot-reload friendly — dev server picks up new files immediately
+  - [ ] Each canvas page is a standalone React component with no imports from the catalog internals
+- [ ] MCP tools for canvas:
+  - [ ] `designkit_create_preview` — accepts a name + React component code, writes it to `src/canvas/`
+  - [ ] `designkit_list_previews` — returns all existing canvas pages
+  - [ ] `designkit_delete_preview` — removes a canvas page
+  - [ ] Tools return the live URL so Claude Code can tell the user where to look
+- [ ] Design token injection:
+  - [ ] Canvas pages receive the resolved design config as a prop or context
+  - [ ] CSS variables from the user's color selections are injected into the canvas wrapper
+  - [ ] Typography (font families, type scale) applied automatically
+  - [ ] Spacing, radius, and shadow tokens available as CSS variables or a style object
+  - [ ] Both light and dark mode work within the canvas
+- [ ] Canvas chrome:
+  - [ ] Minimal wrapper around the generated page (no DesignKit sidebar/topbar clutter)
+  - [ ] Device frame selector (desktop / tablet / mobile viewport sizes)
+  - [ ] Light/dark mode toggle for the preview
+  - [ ] "Open in new tab" for full-screen viewing
+  - [ ] "Back to DesignKit" link
+- [ ] Claude Code integration:
+  - [ ] Update `.claude/CLAUDE.md` with canvas workflow instructions
+  - [ ] Document how Claude Code should use `designkit_get_config` + `designkit_create_preview`
+  - [ ] Include example prompts: "build a settings page", "create a dashboard", "make a login flow"
+  - [ ] Claude Code generates inline styles or Tailwind classes using the design tokens directly
+- [ ] Canvas management UI:
+  - [ ] Canvas list in DesignKit sidebar (below categories) or as a dedicated section
+  - [ ] Rename, duplicate, delete canvas pages from the UI
+  - [ ] Show creation date and which design selections were active when generated
+  - [ ] Export canvas page as standalone HTML or React component
+
+**Checkpoint:** You tell Claude Code "create an expense tracker using components and elements from designkit and show me the preview" → Claude Code generates the page, writes it to the canvas, and tells you the URL. You open it and see a fully styled expense tracker using your chosen colors, typography, buttons, cards, and spacing. No manual wiring needed.
 
 ---
 
@@ -1013,7 +1019,7 @@ Activate the AI Generate panel — turn the "Coming Soon" stub into a working fe
 | 15. Config export | 40+ tasks | ✅ Complete |
 | 16. Generative expansion | 20+ tasks | ✅ Complete |
 | 17. Polish & QA | 41 tasks | ✅ Complete |
-| 18. In-App AI Generation | 20+ tasks | Pending — Claude API integration |
+| 18. Live Preview Canvas | 25+ tasks | Pending — MCP canvas tools + preview system |
 
 **Total catalog items: 400+**
 
